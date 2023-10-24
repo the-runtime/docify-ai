@@ -13,7 +13,7 @@ from tenacity import (
     stop_after_attempt,
     wait_exponential,
 )
-from core.token import get_token_count, truncate_tokens
+from core.tokens import get_token_count, truncate_tokens
 
 
 class OpenAIHandler:

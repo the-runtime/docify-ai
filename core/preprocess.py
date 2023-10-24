@@ -1,14 +1,18 @@
 from typing import List, Dict, Generator, Tuple
 from pathlib import Path
+from core import tokens
+
+
 class RepositoryParser:
 
     def __int__(
             self,
-            config: settings.AppConfig,
-            conf_helper: settings.ConfigHelper,
-
+            # config: settings.AppConfig,
+            # conf_helper: settings.ConfigHelper,
     ):
-        self.config = config
+
+        # self.config = config
+        self.encoding_name = "cl100k_base"
 
     def analyze(self, repo_path: str) -> List[Dict]:
         """Analyze a local or remote git repository"""
@@ -58,7 +62,6 @@ class RepositoryParser:
         """Extracts the file contents from the list of dicts."""
         return {content["path"]: content["content"] for content in contents}
 
-
     def process_language_mapping(self, contents: List[Dict]) -> List[Dict]:
         """Maps file extensions to their programming languages."""
         for content in contents:
@@ -66,3 +69,16 @@ class RepositoryParser:
                 content["extension"], ""
             ).lower()
             setup = self.language_setup.get(content["language"], "")
+            setup = setup if isinstance(setup, list) else [None, None]
+            while len(setup) < 3:
+                setup.append(None)
+            content["install"], content["run"], content["test"] = setup
+        return contents
+
+    def tokenize_content(self, contents: List[Dict]) -> List[Dict]:
+        """Tokenize the content of each file"""
+        for content in contents:
+            content["tokens"] = tokens.get_token_count(
+                contents["content"], self.encoding_name
+            )
+        return contents
