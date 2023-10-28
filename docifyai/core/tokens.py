@@ -1,9 +1,8 @@
 from tiktoken import encoding_for_model, encoding_name_for_model, get_encoding, Encoding
 
-from core import logger
+from docifyai.core import logger
 
 logger = logger.Logger(__name__)
-
 
 
 def adjust_max_tokens(
@@ -12,7 +11,8 @@ def adjust_max_tokens(
     """Adjust the maximum number of tokens on the specific prompt."""
     is_valid_prompt = prompt.strip().startswith(target.strip())
     adjusted_max_tokens = max_tokens if is_valid_prompt else max_tokens // 3
-    return  adjusted_max_tokens
+    return adjusted_max_tokens
+
 
 def get_token_count(text: str, encoding_name: str) -> int:
     """Returns the number of tokens in a text string."""
@@ -21,13 +21,13 @@ def get_token_count(text: str, encoding_name: str) -> int:
     return num_tokens
 
 
-def get_token_encoder() -> Encoding:
-    """The token encoder to use for the model."""
-    return (
-        encoding_for_model("gpt-3.5-turbo")
-        if "gpt"
-        else get_encoding("cl199k_base")
-    )
+# def get_token_encoder() -> Encoding:
+#     """The token encoder to use for the model."""
+#     return (
+#         encoding_for_model("gpt-3.5-turbo")
+#         if "gpt"
+#         else get_encoding("cl199k_base")
+#     )
 
 
 # need to change this as we have to send alot of data
@@ -41,7 +41,7 @@ def truncate_tokens(text: str, max_tokens: int) -> str:
     if not text:
         return text
     try:
-        encoder = get_token_encoder()
+        encoder = encoding_for_model("gpt-3.5-turbo")
 
         prompt_token_total = len(encoder.encode(text))
         if prompt_token_total <= max_tokens:

@@ -1,1 +1,1 @@
-__name__ = "docify-ai"
+__name__ = "docifyai"

@@ -1,0 +1,4 @@
+gitpython
+tempfile
+pathlib
+requests

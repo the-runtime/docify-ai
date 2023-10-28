@@ -1,6 +1,8 @@
+"""Not in use right now, will be used in future"""
+
 from typing import List, Dict
 
-from core import logger
+from docifyai.core import logger
 logger = logger.Logger(__name__)
 
 def get_file_parser() -> Dict[str, callable]:
