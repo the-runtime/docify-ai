@@ -3,7 +3,7 @@ import tempfile
 import git
 import requests
 from pathlib import Path
-from core import logger
+from docifyai.core import logger
 
 logger = logger.Logger(__name__)
 
@@ -12,7 +12,7 @@ def get_github_repo_metadata(repo_url: str) -> dict:
     """Retrieves metadata of a GitHub repository"""
     parts = repo_url.rstrip("/").split("/")
     user_repo_name = f"{parts[3]}/{parts[4]}"
-    api_url = f"https:api.github.com/repos/{user_repo_name}"
+    api_url = f"https://api.github.com/repos/{user_repo_name}"
 
     try:
         response = requests.get(api_url)
@@ -29,14 +29,14 @@ def get_github_repo_metadata(repo_url: str) -> dict:
         ) from excinfo
 
 
-def clone_repo(repo_url: str) -> Path:
+def clone_repo(repo_url: str) -> str:
     """clone the repo to temporary folder"""
     temp_dir = tempfile.mkdtemp()
     try:
         git.Repo.clone_from(repo_url, temp_dir, depth=1, single_branch=True)
         # may need to remove the .git folder in the temp folder
 
-        return Path(temp_dir)
+        return temp_dir
     except git.GitCommandError as excinfo:
         raise ValueError(f"Git clone error: {excinfo}") from excinfo
 

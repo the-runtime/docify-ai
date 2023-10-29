@@ -3,12 +3,12 @@ from pathlib import Path
 
 from docifyai.core import tokens
 from docifyai.utils import utils
-import logger
+from docifyai.core import logger
 
 logger = logger.Logger(__name__)
 
 
-class _RepoParseFunc:
+class RepoParseFunc:
     """Functions for processing of the input codebase"""
     @classmethod
     def analyze(cls, repo_path: str) -> List[Dict]:
@@ -21,7 +21,8 @@ class _RepoParseFunc:
     @classmethod
     def generate_contents(cls, repo_path: str) -> List[Dict]:
         """Generates a list of Dict of file information"""
-        repo_path = Path(repo_path)
+        p = Path(repo_path)
+        repo_path = p
 
         data = list(cls.generate_file_info(repo_path))
 
@@ -34,7 +35,14 @@ class _RepoParseFunc:
                 "content": content,
                 "extension": extension
             })
-            return contents
+        return contents
+
+    @classmethod
+    def get_files(cls, repo_path: str) -> dict[Path, str]:
+        contents = cls.analyze(repo_path)
+        retobj = {content["path"]: content["content"] for content in contents}
+        return retobj
+
 
     @staticmethod
     def generate_file_info(repo_path: Path) -> Generator[Tuple[str, Path, str], None, None]:
@@ -54,7 +62,9 @@ class _RepoParseFunc:
 
     @staticmethod
     def tokenize_contents(contents: List[Dict]) -> List[Dict]:
-        """Tokenize the contents of each file"""
+        """Tokenize the contents of each file
+        not tokenizing tough, just counting the tokens"""
+
         for content in contents:
             content["tokens"] = tokens.get_token_count(
                 content["content"], tokens.encoding_name_for_model("gpt-3.5-turbo")

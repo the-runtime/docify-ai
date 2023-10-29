@@ -18,14 +18,14 @@ def should_ignore(file_path: Path) -> bool:
         logger.debug(f"Ignoring file: {file_path}")
         return True
 
-    if file_path.suffix[1:]in ignore_files["extensions"]:
+    if file_path.suffix[1:] in ignore_files["extensions"]:
         logger.debug(f"Ignoring file: {file_path}")
         return True
 
     return False
 
 
-def get_ignore_files() -> Dict[str,list[str]]:
+def get_ignore_files() -> Dict[str, list[str]]:
     directories = [
         ".DS_Store",
         ".dvc",
@@ -52,6 +52,8 @@ def get_ignore_files() -> Dict[str,list[str]]:
         "Examples",
     ]
     extensions = [
+        'ttf',
+        'otf',
         # 'apk',
         # 'app',
         'bak',
@@ -166,8 +168,6 @@ def get_ignore_files() -> Dict[str,list[str]]:
         "test_binary",
     ]
 
-
-
     ignore_files = {
         "directories": directories,
         "extensions": extensions,
@@ -175,3 +175,12 @@ def get_ignore_files() -> Dict[str,list[str]]:
     }
 
     return ignore_files
+
+
+def get_prompt(val: int = 1) -> str:
+    if val == 1:
+        return """Offer a comprehensive summary that encapsulates the core functionalities of the code:
+        Path: {0}
+        Contents: {1}
+        Aim for precision and conciseness in your explanation, ensuring a fine balance between detail and brevity. Limit your response to a maximum of 225 characters (including spaces)."""
+

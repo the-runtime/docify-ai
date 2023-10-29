@@ -1,0 +1,5 @@
+.idea/
+venv2/
+venv/
+*.docx
+*/__pycache__/

@@ -1,8 +1,9 @@
 import asyncio
 import time
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
+from pathlib import Path
 import httpx
-import logger
+from docifyai.core import logger
 import openai
 from cachetools import TTLCache
 
@@ -48,8 +49,8 @@ class OpenAIHandler:
         self.api_key = "41f2c19fbaf343a0b93ec51f17107f28"
 
     async def code_to_text(
-            self, ignore: dict, files: Dict[str, str], prompt: str
-    ) -> Dict[str, str]:
+            self, ignore: dict, files: Dict[Path, str], prompt: str
+    ) -> List[Dict]:
         """converts code to natural language by using large language model"""
 
         tasks = []
@@ -65,14 +66,15 @@ class OpenAIHandler:
                 self.logger.warning(f"Ignoring file:{path}")
                 continue
 
-            prompt_code = prompt.format(str(path), contents)
+            prompt_code = prompt.format(contents, str(path))
+            # prompt_code = f"{prompt}"
             tasks.append(
                 asyncio.create_task(
-                    self.generate_text(path, prompt_code, self.tokens)
+                    self.generate_text(str(path), prompt_code, self.tokens)
                 )
             )
 
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+        results = await asyncio.gather(*tasks)
 
         filter_results = []
 
@@ -114,7 +116,7 @@ class OpenAIHandler:
                 )
                 response.raise_for_status()
                 data = response.json()
-                summary = data["choises"][0]["message"]["content"]
+                summary = data["choices"][0]["message"]["content"]
 
                 self.logger.info(
                     f"\nProcessing prompt: {index}\nResponse: {summary}"
@@ -142,7 +144,7 @@ class OpenAIHandler:
             )
 
         except Exception as excinfo:
-            self.logger.error(f"Exception:\n{str(excinfo)}")
+            self.logger.error(f"Exception hello:\n{str(excinfo)}")
             return await self.null_summary(index, f"Exception: {excinfo}")
 
         finally:
