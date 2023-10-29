@@ -23,7 +23,7 @@ class OpenAIHandler:
     logger = logger.Logger(__name__)
 
     def __init__(self):
-        """Intialize the OpenAi Handler"""
+        """Initialize the OpenAi Handler"""
 
         # should come from config rather than hard coded
         self.endpoint = "https://doc.openai.azure.com/openai/deployments/test-doc/chat/completions/?api-version=2023-05-15"
