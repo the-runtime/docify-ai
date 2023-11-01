@@ -85,6 +85,10 @@ class OpenAIHandler:
                 filter_results.append(result)
         return filter_results
 
+    async def chat_to_text(self, prompts: List[str]) -> List[str]:
+        """Generates text using prompts and azure OpenAI's GPT model"""
+        return [""]
+
     async def generate_text(
             self, index: str, prompt: str, tokens: int
     ) -> Tuple[str, str]:
