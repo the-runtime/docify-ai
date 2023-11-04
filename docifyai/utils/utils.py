@@ -1,8 +1,21 @@
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Tuple, List
 from docifyai.core import logger
 
 logger = logger.Logger(__name__)
+
+
+def change_tuple_to_dict(sample: List[Tuple[str, str]]) -> Dict[str, str]:
+    resp_dict = {}
+    for r in sample:
+        resp_dict[r[0]] = r[1]
+    return resp_dict
+
+
+def get_working_path_of_project(repo_path: str, base_folder: Path) -> Path:
+    logger.debug(base_folder.joinpath(repo_path))
+    base_folder.joinpath(repo_path)
+    return base_folder.joinpath(repo_path)
 
 
 def should_ignore(file_path: Path) -> bool:
@@ -177,10 +190,24 @@ def get_ignore_files() -> Dict[str, list[str]]:
     return ignore_files
 
 
-def get_prompt(val: int = 1) -> str:
-    if val == 1:
-        return """Offer a comprehensive summary that encapsulates the core functionalities of the code:
+def get_intro_prompt() -> str:
+    return """Offer a comprehensive architectural design and other aspects of a software project that also encapsulates 
+    the core functionalities of the project given the details of the packages and files inside it.
+    {0}
+    """
+
+
+def get_folders_prompt() -> str:
+    return """Offer a detailed higher level (don't talk about implementation) examination of the folder/package of 
+    which the implementation details is provided below along with its relative position. Assume it is for normal non 
+    technical person. 
+    {0}"""
+
+
+def get_implementation_prompt() -> str:
+    return """Offer a detailed explanation of the code
+        Aim for point-wise explanation of the implementation of the code, taking reference of point from the 'Files referenced from the main file''
         Path: {0}
         Contents: {1}
-        Aim for precision and conciseness in your explanation, ensuring a fine balance between detail and brevity. Limit your response to a maximum of 225 characters (including spaces)."""
-
+        Files referenced from the main file:{2}
+        """

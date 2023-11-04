@@ -29,10 +29,10 @@ class OpenAIHandler:
         self.endpoint = "https://doc.openai.azure.com/openai/deployments/test-doc/chat/completions/?api-version=2023-05-15"
         self.encoding = "cl100k_base"
         self.model = "gpt-3.5-turbo"
-        self.tokens = 650
-        self.tokens_max = 3800
+        self.tokens = 2000
+        self.tokens_max = 4000
         self.temperature = 1.1
-        self.rate_limit = 3
+        self.rate_limit = 5
         self.cache = TTLCache(maxsize=500, ttl=600)
         self.http_client = httpx.AsyncClient(
             http2=True,
@@ -49,8 +49,8 @@ class OpenAIHandler:
         self.api_key = "41f2c19fbaf343a0b93ec51f17107f28"
 
     async def code_to_text(
-            self, ignore: dict, files: Dict[Path, str], prompt: str
-    ) -> List[Dict]:
+            self, ignore: dict, files: Dict[Path, str], prompt: str, depend_dict: Dict[Path, List[Path]]
+    ) -> List[Tuple]:
         """converts code to natural language by using large language model"""
 
         tasks = []
@@ -65,8 +65,16 @@ class OpenAIHandler:
             ):
                 self.logger.warning(f"Ignoring file:{path}")
                 continue
-
-            prompt_code = prompt.format(contents, str(path))
+            depend_files = depend_dict.get(path)
+            prompt_3rd = "["
+            if depend_files:
+                for file_path in depend_files:
+                    depend_content = files.get(file_path)
+                    if depend_content:
+                        prompt_3rd += f"Path: {file_path} \nContents: {depend_content}"
+            prompt_3rd += "]"
+            prompt_code = prompt.format(str(path), contents, prompt_3rd)
+            # print(prompt_code)
             # prompt_code = f"{prompt}"
             tasks.append(
                 asyncio.create_task(
@@ -85,9 +93,66 @@ class OpenAIHandler:
                 filter_results.append(result)
         return filter_results
 
-    async def chat_to_text(self, prompts: List[str]) -> List[str]:
+    async def folder_to_text(self, code_details: Dict[str, str], working_folder: Path,temp_dir: str, prompt: str) -> \
+            List[Tuple[str, str]]:
         """Generates text using prompts and azure OpenAI's GPT model"""
-        return [""]
+        # use prompt text instead of empty string
+        tasks = []
+        if working_folder.is_dir():  # always true as this is the initial directory of the project
+            for child in working_folder.iterdir():
+                prompt_var_text = ""
+                if child.is_file():
+                    value_prompt = code_details.get(str(child.relative_to(temp_dir)))
+                    file_path = str(child.relative_to(working_folder))
+                    if value_prompt:
+                        prompt_var_text += f"path: {str(file_path)} \nDescription: {value_prompt}\n"
+                        prompt_text = prompt.format(prompt_var_text)
+                    # tasks.append(
+                    #     asyncio.create_task(
+                    #         self.generate_text(str(child.relative_to(working_folder)), prompt_text, self.tokens)
+                    #     )
+                    # )
+                elif child.is_dir():
+                    for file_child in child.rglob("*"):
+                        if file_child.is_file():
+                            value_prompt = code_details.get(str(file_child.relative_to(temp_dir)))
+                            file_path = str(file_child.relative_to(working_folder))
+                            if value_prompt:
+                                prompt_var_text += f"path: {file_path} \nDescription: {value_prompt}\n"
+                                prompt_text = prompt.format(prompt_var_text)
+
+                tasks.append(
+                    asyncio.create_task(
+                        self.generate_text(str(child.relative_to(temp_dir)), prompt_text,
+                                           self.tokens)
+                    )
+                )
+        final_result = []
+        results = await asyncio.gather(*tasks)
+
+        for result in results:
+            if isinstance(result, Exception):
+                self.logger.error("Task failed with exception: ", result)
+            else:
+                final_result.append(result)
+
+        return final_result
+
+    async def get_text_for_intro(self, folder_details: Dict[str, str], prompt: str) -> Tuple[str, str]:
+        prompt_str = ""
+        for name, text in folder_details.items():
+            if Path(name).is_file():
+                prompt_str += f"Filename: {name}\nDetails: {text}\n"
+            else:
+                prompt_str += f"Package/Folder name: {str}\n Details: {text}\n"
+        prompt_final = prompt.format(prompt_str)
+
+        result = await self.generate_text("Introduction", prompt_final, self.tokens)
+        if isinstance(result, Exception):
+            self.logger.error("Error getting Intro for the project ", result)
+            return "Introduction", ""
+        else:
+            return result
 
     async def generate_text(
             self, index: str, prompt: str, tokens: int
@@ -122,9 +187,9 @@ class OpenAIHandler:
                 data = response.json()
                 summary = data["choices"][0]["message"]["content"]
 
-                self.logger.info(
-                    f"\nProcessing prompt: {index}\nResponse: {summary}"
-                )
+                # self.logger.info(
+                #     f"\nProcessing prompt: {index}\nResponse: {summary}"
+                # )
                 self.cache[prompt] = summary
                 return index, summary
 
