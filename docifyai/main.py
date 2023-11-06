@@ -8,6 +8,7 @@ from docifyai.utils import utils
 from docifyai.core.preprocess import RepoParseFunc as repo_parse
 from docifyai.langaugeSupport import get_lang_support
 from docifyai.document.aiDoc import Aidoc
+from docifyai.config.config import enVar
 
 logger = logger.Logger(__name__)
 
@@ -18,12 +19,15 @@ async def docify_run() -> None:
     url = "https://github.com/Pythagora-io/gpt-pilot"
     working_folder = "."
     # url = "https://github.com/the-runtime/serverDowndrive"
+
     repo_info = get_repo.get_github_repo_metadata(url)
     logger.info(f"Repo info {repo_info}")
 
+    # load environment variables
+    env_var = enVar()
     temp_dir = get_repo.clone_repo(url)
     working_path = utils.get_working_path_of_project(working_folder, Path(temp_dir))
-    llm = model.OpenAIHandler()
+    llm = model.OpenAIHandler(env_var)
 
     try:
         files = repo_parse.get_files(temp_dir)

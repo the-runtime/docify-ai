@@ -15,23 +15,23 @@ from tenacity import (
     wait_exponential,
 )
 from docifyai.core.tokens import get_token_count, truncate_tokens
-
+from docifyai.config import config
 
 class OpenAIHandler:
     """OpenAI Handler for generating text from the code """
 
     logger = logger.Logger(__name__)
 
-    def __init__(self):
+    def __init__(self, env_var:config.enVar):
         """Initialize the OpenAi Handler"""
 
         # should come from config rather than hard coded
-        self.endpoint = "https://doc.openai.azure.com/openai/deployments/test-doc/chat/completions/?api-version=2023-05-15"
+        self.endpoint = env_var.model_endpoint
         self.encoding = "cl100k_base"
-        self.model = "gpt-3.5-turbo"
-        self.tokens = 2000
-        self.tokens_max = 4000
-        self.temperature = 1.1
+        self.model = env_var.model_name
+        self.tokens = env_var.tokens
+        self.tokens_max = env_var.max_tokens
+        self.temperature = env_var.temperature
         self.rate_limit = 5
         self.cache = TTLCache(maxsize=500, ttl=600)
         self.http_client = httpx.AsyncClient(
@@ -46,7 +46,7 @@ class OpenAIHandler:
         self.last_request_time = time.monotonic()
 
         # to be imported from env
-        self.api_key = "41f2c19fbaf343a0b93ec51f17107f28"
+        self.api_key = env_var.azure_openai_key
 
     async def code_to_text(
             self, ignore: dict, files: Dict[Path, str], prompt: str, depend_dict: Dict[Path, List[Path]]

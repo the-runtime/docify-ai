@@ -20,3 +20,10 @@ tenacity
 tiktoken
 toml
 
+python-dotenv
+jedi
+
+fastapi
+itsdangerous
+
+//also add googleapiclients

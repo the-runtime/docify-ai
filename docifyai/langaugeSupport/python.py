@@ -1,10 +1,7 @@
-from abc import ABC
 from typing import List, Dict
 from pathlib import Path
 import jedi
 from docifyai.core import logger
-# from pygments.token import Token
-# from pygments.lexers import get_lexer_by_name
 
 from docifyai.langaugeSupport.abstractLangClass import LanguageClass
 
@@ -12,15 +9,6 @@ logger = logger.Logger(__name__)
 
 
 class LangSupportPython(LanguageClass):
-
-    # def tokenize(self) -> bool:
-    #     lexer = get_lexer_by_name("python")
-    #     tokens = list(lexer.get_tokens(self.code))
-    #
-    #     self.code_tokens = [value for token_type, value in tokens if token_type == Token.Name]
-    #     if len(self.code_tokens) > 0:
-    #         return True
-    #     return False
 
     def get_depend_dict(self) -> Dict[Path, List[Path]]:
 
