@@ -26,7 +26,12 @@ jedi
 fastapi
 itsdangerous
 
-//also add googleapiclients
+
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+google-auth
+google-api-core
 
 sqlalchemy
 psycopg2-binary
