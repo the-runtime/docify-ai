@@ -3,3 +3,4 @@ venv2/
 venv/
 *.docx
 __pycache__/**/
+*.env

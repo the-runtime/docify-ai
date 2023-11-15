@@ -191,23 +191,18 @@ def get_ignore_files() -> Dict[str, list[str]]:
 
 
 def get_intro_prompt() -> str:
-    return """Offer a comprehensive architectural design and other aspects of a software project that also encapsulates 
-    the core functionalities of the project given the details of the packages and files inside it.
-    {0}
-    """
+    return """Give the purpose of the project and tell about what it does and serves to end user. Also offer a 
+    comprehensive architectural design and other aspects of the software project that encapsulates the core 
+    functionalities of the project given the details of the packages and files inside it. Details: {0}"""
 
 
 def get_folders_prompt() -> str:
-    return """Offer a detailed higher level (don't talk about implementation) examination of the folder/package of 
-    which the implementation details is provided below along with its relative position. Assume it is for normal non 
-    technical person. 
-    {0}"""
+    return """Offer a detailed higher level (don't talk about implementation and programming) examination of what the 
+    purpose of the folder/package of which the implementation details is provided below along with its relative 
+    position. Assume it is for normal non technical person. {0}"""
 
 
 def get_implementation_prompt() -> str:
-    return """Offer a detailed explanation of the code
-        Aim for point-wise explanation of the implementation of the code, taking reference of point from the 'Files referenced from the main file''
-        Path: {0}
-        Contents: {1}
-        Files referenced from the main file:{2}
-        """
+    return """Offer a detailed explanation of the code Aim for point-wise explanation of the implementation of the 
+    code, taking reference of point from the 'Files referenced from the main file'' Path: {0} Contents: {1} Files 
+    referenced from the main file:{2}"""

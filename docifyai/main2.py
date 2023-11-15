@@ -16,8 +16,9 @@ logger = logger.Logger(__name__)
 async def docify_run() -> None:
     logger.info("Welcome to docify-ai prototype testing")
     # url = sys.argv[1]
-    url = "https://github.com/Pythagora-io/gpt-pilot"
-    working_folder = "."
+    url = "https://github.com/eli64s/Readme-ai"
+    branch = "main"
+    working_folder = "readmeai"
     # url = "https://github.com/the-runtime/serverDowndrive"
 
     repo_info = get_repo.get_github_repo_metadata(url)
@@ -25,7 +26,7 @@ async def docify_run() -> None:
 
     # load environment variables
     env_var = enVar()
-    temp_dir = get_repo.clone_repo(url)
+    temp_dir = get_repo.clone_repo(url, branch)
     working_path = utils.get_working_path_of_project(working_folder, Path(temp_dir))
     llm = model.OpenAIHandler(env_var)
 

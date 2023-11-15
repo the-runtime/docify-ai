@@ -6,6 +6,9 @@ import requests
 from pathlib import Path
 from docifyai.core import logger
 from docifyai.document import contents
+import random
+import string
+import tempfile
 
 logger = logger.Logger(__name__)
 
@@ -28,13 +31,20 @@ class Aidoc:
         # we may use non default template in future
         self.doc = Document()
 
+    @staticmethod
+    def gen_unique_name(prefix: str, length: int = 10) -> str:
+        random_part = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+        return f"{prefix}{random_part}.docx"
+
     def create_document(self) -> str:
         self.add_first_page()
         self.add_content_page()
         self.add_intro_page()
         self.add_chapters()
-        self.doc.save("documentFileFirst.docx")
-        return "documentFileFirst.docx"
+        # doc_name = self.gen_unique_name("doc_")
+        doc_temp_file = tempfile.mktemp(".docx", "doc_")
+        self.doc.save(doc_temp_file)
+        return doc_temp_file
 
     def add_first_page(self) -> None:
         """"""

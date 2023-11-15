@@ -17,21 +17,22 @@ from tenacity import (
 from docifyai.core.tokens import get_token_count, truncate_tokens
 from docifyai.config import config
 
+
 class OpenAIHandler:
     """OpenAI Handler for generating text from the code """
 
     logger = logger.Logger(__name__)
 
-    def __init__(self, env_var:config.enVar):
+    def __init__(self, env_var: config.enVar):
         """Initialize the OpenAi Handler"""
 
         # should come from config rather than hard coded
         self.endpoint = env_var.model_endpoint
         self.encoding = "cl100k_base"
         self.model = env_var.model_name
-        self.tokens = env_var.tokens
-        self.tokens_max = env_var.max_tokens
-        self.temperature = env_var.temperature
+        self.tokens = int(env_var.tokens)
+        self.tokens_max = int(env_var.max_tokens)
+        self.temperature = float(env_var.temperature)
         self.rate_limit = 5
         self.cache = TTLCache(maxsize=500, ttl=600)
         self.http_client = httpx.AsyncClient(
@@ -93,7 +94,7 @@ class OpenAIHandler:
                 filter_results.append(result)
         return filter_results
 
-    async def folder_to_text(self, code_details: Dict[str, str], working_folder: Path,temp_dir: str, prompt: str) -> \
+    async def folder_to_text(self, code_details: Dict[str, str], working_folder: Path, temp_dir: str, prompt: str) -> \
             List[Tuple[str, str]]:
         """Generates text using prompts and azure OpenAI's GPT model"""
         # use prompt text instead of empty string
@@ -172,7 +173,7 @@ class OpenAIHandler:
                         "messages": [
                             {
                                 "role": "system",
-                                "content": "You're a brilliant Tech Lead.",
+                                "content": "You are an automatic code documentation generator, which generates documentation in docx format.",
                             },
                             {
                                 "role": "user", "content": prompt,
@@ -187,9 +188,9 @@ class OpenAIHandler:
                 data = response.json()
                 summary = data["choices"][0]["message"]["content"]
 
-                # self.logger.info(
-                #     f"\nProcessing prompt: {index}\nResponse: {summary}"
-                # )
+                self.logger.info(
+                    f"\nProcessing prompt: {index}\nResponse: {summary}"
+                )
                 self.cache[prompt] = summary
                 return index, summary
 

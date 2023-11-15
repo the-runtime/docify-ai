@@ -13,9 +13,12 @@ def get_github_repo_metadata(repo_url: str) -> dict:
     parts = repo_url.rstrip("/").split("/")
     user_repo_name = f"{parts[3]}/{parts[4]}"
     api_url = f"https://api.github.com/repos/{user_repo_name}"
+    headres = {
+        'Authorization': f'token {"use your auth token from env"}',
+    }
 
     try:
-        response = requests.get(api_url)
+        response = requests.get(api_url, headres=headres)
         response.raise_for_status()
         if response.status_code == 200:
             return response.json()
@@ -29,11 +32,11 @@ def get_github_repo_metadata(repo_url: str) -> dict:
         ) from excinfo
 
 
-def clone_repo(repo_url: str) -> str:
+def clone_repo(repo_url: str, branch: str) -> str:
     """clone the repo to temporary folder"""
     temp_dir = tempfile.mkdtemp()
     try:
-        git.Repo.clone_from(repo_url, temp_dir, depth=1, single_branch=True)
+        git.Repo.clone_from(repo_url, temp_dir, branch=branch, depth=1, single_branch=True)
         # may need to remove the .git folder in the temp folder
 
         return temp_dir

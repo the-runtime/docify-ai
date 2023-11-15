@@ -1,2 +1,8 @@
 write a lsp client, implementing call to refrences and document link
-'{"jsonrpc":"2.0","method":"window/showMessage","params":{"type":4,"message":"Loading packages..."}}'
+
+use alembic python app to do database migrations
+
+
+
+https://www.googleapis.com/auth/userinfo.email" to "openid
+https://www.googleapis.com/auth/userinfo.email

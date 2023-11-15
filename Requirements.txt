@@ -27,3 +27,12 @@ fastapi
 itsdangerous
 
 //also add googleapiclients
+
+sqlalchemy
+psycopg2-binary
+alembic
+
+rq
+redis
+
+azure-storage-blob
