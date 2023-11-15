@@ -61,7 +61,7 @@ app.add_middleware(SessionMiddleware, secret_key=env_var.server_secret_key)  # t
 # security = OpenIdConnect("/api/auth/google")
 
 # for Google oauth service
-json_file = "/home/tabish/Documents/Projects/docify-ai/client_secret_1015116338006-oa6d1dgtniq8oj07amhf9l1qn2s2qh0m.apps.googleusercontent.com.json"
+json_file = env_var.google_json_file
 scopes = [
     'openid',
     'https://www.googleapis.com/auth/userinfo.email'

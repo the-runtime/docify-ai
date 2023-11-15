@@ -25,7 +25,8 @@ jedi
 
 fastapi
 itsdangerous
-
+python-docx
+uvicorn
 
 google-auth-oauthlib
 google-auth-httplib2
