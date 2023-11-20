@@ -27,6 +27,7 @@ fastapi
 itsdangerous
 python-docx
 uvicorn
+jinja2
 
 google-auth-oauthlib
 google-auth-httplib2

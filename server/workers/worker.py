@@ -63,9 +63,9 @@ def run_workers(queue_name: str,
         raise
 
 
-if __name__ == "__main__":
-    logger.info("RQ worker started.")
-    try:
-        run_workers("job_objects5")
-    except KeyboardInterrupt:
-        logger.info("RQ worker stopped buy user.")
+# if __name__ == "__main__":
+#     logger.info("RQ worker started.")
+#     try:
+#         run_workers("job_objects5")
+#     except KeyboardInterrupt:
+#         logger.info("RQ worker stopped buy user.")
