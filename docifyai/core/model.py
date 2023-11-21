@@ -190,9 +190,9 @@ class OpenAIHandler:
                 data = response.json()
                 summary = data["choices"][0]["message"]["content"]
 
-                self.logger.info(
-                    f"\nProcessing prompt: {index}\nResponse: {summary}"
-                )
+                # self.logger.info(
+                #     f"\nProcessing prompt: {index}\nResponse: {summary}"
+                # )
                 self.cache[prompt] = summary
                 return index, summary
 
