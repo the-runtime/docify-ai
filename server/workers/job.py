@@ -26,7 +26,7 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
     # url = "https://github.com/the-runtime/serverDowndrive"
 
     # load environment variables
-    env_var = enVar("")  # use config file
+    env_var = enVar()  # use config file
 
     repo_info = get_repo.get_github_repo_metadata(url, env_var.github_token)
     logger.info(f"Repo info {repo_info}")
