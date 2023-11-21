@@ -178,8 +178,8 @@ def get_history(user_id: str = Depends(get_user_info)):
             list_history.append(
                 routeResponse.singleHistory(
                     historyId=single_history.id,
-                    filename=single_history.filename,
-                    fileDownloadLink=single_history.file_download_link,
+                    filename=single_history.filename.split("/")[-1],
+                    fileDownloadLink=f"https://docify-ai.the-runtime.me/api/getdoc/{single_history.filename}",
                     # need to modify it before sending (azure security)
                     generationTime=single_history.gen_time,
                 )

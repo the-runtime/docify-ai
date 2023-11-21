@@ -19,7 +19,6 @@ logger = logger.Logger(__name__)
 
 async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: str, working_folder: str) -> None:
     logger.info("Welcome to docify-ai prototype testing")
-    logger.debug("Value of user_id is", user_id, type(user_id))
 
     # load environment variables
     env_var = enVar()  # use config file
