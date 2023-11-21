@@ -149,7 +149,7 @@ def check_auth(user_info: dict = Depends(get_user_info)):
 
 
 @app.get("/api/userinfo", response_model=routeResponse.Userinfo | str)
-def get_userinfo(user_id: str = Depends(get_user_info)):
+def get_api_userinfo(user_id: str = Depends(get_user_info)):
     if user_id is None:
         return JSONResponse("Not authenticated", status_code=status.HTTP_401_UNAUTHORIZED)
         # return routeResponse.ErrorClass.error.append("Error finding user")
@@ -197,7 +197,7 @@ def get_history(user_id: str = Depends(get_user_info)):
 
 
 @app.get("/api/document/")
-async def generate_doc(url: str, branch: str, work_dir: str, user_id: str = Depends(get_userinfo)):
+async def generate_doc(url: str, branch: str, work_dir: str, user_id: str = Depends(get_user_info)):
     if not user_id:
         return "Not authenticated"  # also add status type for client to handle it gracefully
     doc_job = job_que.enqueue(job.docify_job, url, branch, azure_blob_strings, user_id, work_dir)
@@ -206,7 +206,7 @@ async def generate_doc(url: str, branch: str, work_dir: str, user_id: str = Depe
 
 
 @app.get("/api/get-jobs-info")
-async def get_job_info(user_id: str = Depends(get_userinfo)):
+async def get_job_info(user_id: str = Depends(get_user_info)):
     """Use another redis DS to the access the jobs in progress """
     return HTMLResponse("Not implemented yet")
 
