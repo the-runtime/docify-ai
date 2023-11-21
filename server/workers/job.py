@@ -26,13 +26,13 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
     # url = "https://github.com/the-runtime/serverDowndrive"
 
     # load environment variables
-    env_var = enVar("docify.env")  # use config file
+    env_var = enVar("")  # use config file
 
     repo_info = get_repo.get_github_repo_metadata(url, env_var.github_token)
     logger.info(f"Repo info {repo_info}")
 
     db = database.Database(
-        "postgresql://kuenjhxg:8AIFi8SXHtEhfUszJsSE2KUwsJ0hA56Y@john.db.elephantsql.com/kuenjhxg")  # use from env file
+        env_var.postgres_url)  # use from env file
     # db_session = db.get_session()
 
     temp_dir = get_repo.clone_repo(url, branch)

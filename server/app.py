@@ -245,12 +245,12 @@ async def serve_react_app(req: Request, path: str):
 
 
 # change this /holly-react with /
-@app.get("/holly-react")
-async def redirect_landing_page():
-    return RedirectResponse("/holly-react/", status_code=status.HTTP_308_PERMANENT_REDIRECT)
+# @app.get("/holly-react")
+# async def redirect_landing_page():
+#     return RedirectResponse("/holly-react/", status_code=status.HTTP_308_PERMANENT_REDIRECT)
 
 
-@app.get("/holly-react/{path:path}", include_in_schema=False)
+@app.get("/{path:path}", include_in_schema=False)
 async def serve_landing_page(req: Request, path: str):
     check_react_route = True if len(path.split(".")) == 1 else False
     if path == "index.html" or check_react_route:

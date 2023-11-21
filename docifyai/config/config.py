@@ -18,6 +18,7 @@ class enVar:
             self.max_tokens = os.getenv("MAX_TOKENS")
             self.temperature = os.getenv("TEMPERATURE")
             self.github_token = os.getenv("GITHUB_TOKEN")
+            self.postgres_url = os.getenv("POSTGRES_URL")
         else:
             logger.error("Problem loading env file, make sure it is available")
             sys.exit()
