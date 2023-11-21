@@ -1,32 +1,24 @@
-"""initial_migration
+"""update_hostory
 
-Revision ID: cf942b549acd
-Revises: 
-Create Date: 2023-11-06 23:45:50.862972
+Revision ID: 68b4c2a699e3
+Revises: cf942b549acd
+Create Date: 2023-11-22 00:14:29.029337
 
 """
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy import String, Integer
+
 
 # revision identifiers, used by Alembic.
-revision: str = 'cf942b549acd'
-down_revision: Union[str, None] = None
+revision: str = '68b4c2a699e3'
+down_revision: Union[str, None] = 'cf942b549acd'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.create_table(
-        'docify_users',
-        sa.Column('id', sa.String(100), primary_key=True, index=True),
-        sa.Column('username', sa.String(50)),
-        sa.Column('email', sa.String(100)),
-        sa.Column('img_url', sa.String(200)),
-        sa.Column('credits', sa.Integer),
-    )
     op.create_table(
         'docify_history',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
