@@ -21,6 +21,7 @@ class enVar:
             self.redis_password = os.getenv("REDIS_PASSWORD")
             self.redis_queue_name = os.getenv("REDIS_QUEUE_NAME")
 
+
         else:
             logger.error("Problem loading env file, make sure it is available")
             sys.exit()

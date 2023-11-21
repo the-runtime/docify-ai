@@ -17,8 +17,6 @@ from server.controller import blobcontroller
 logger = logger.Logger(__name__)
 
 
-
-
 async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: str, working_folder: str) -> None:
     logger.info("Welcome to docify-ai prototype testing")
     # url = sys.argv[1]
@@ -27,11 +25,12 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
     # working_folder = "readmeai"
     # url = "https://github.com/the-runtime/serverDowndrive"
 
-    repo_info = get_repo.get_github_repo_metadata(url)
-    logger.info(f"Repo info {repo_info}")
-
     # load environment variables
     env_var = enVar("docify.env")  # use config file
+
+    repo_info = get_repo.get_github_repo_metadata(url, env_var.github_token)
+    logger.info(f"Repo info {repo_info}")
+
     db = database.Database(
         "postgresql://kuenjhxg:8AIFi8SXHtEhfUszJsSE2KUwsJ0hA56Y@john.db.elephantsql.com/kuenjhxg")  # use from env file
     # db_session = db.get_session()
