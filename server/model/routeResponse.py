@@ -12,7 +12,7 @@ class Userinfo(BaseModel):
 
 
 class singleHistory(BaseModel):
-    historyId: str
+    historyId: int
     filename: str
     fileDownloadLink: str
     generationTime: datetime
