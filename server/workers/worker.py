@@ -24,7 +24,7 @@ logger = logger.Logger(__name__)
 """Use logger in such a way that it can tell, from which job it is called from"""
 
 
-def run_workers(queue_name: str,
+def run_workers(env_config,
                 num_threads: int = 4):  # num_threads = 4 because of 5 conn is allowed for elephant sql 1 base + 4 workers
     # Establish a connection to the redis server
     # redis_conn = Redis()
@@ -54,8 +54,8 @@ def run_workers(queue_name: str,
     #     thread.join()
     try:
         # Create a connection to the Redis server
-        redis_conn = Redis()
-        worker = Worker(queue_name, connection=redis_conn)
+        redis_conn = Redis(host=env_config.redis_host, port=env_config.redis_port)
+        worker = Worker(env_config.redis_queue_name, connection=redis_conn)
         worker.work()
 
     except Exception as excinfo:
