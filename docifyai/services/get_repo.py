@@ -18,7 +18,7 @@ def get_github_repo_metadata(repo_url: str, auth_token: str) -> dict:
     }
 
     try:
-        response = requests.get(api_url, headres=header)
+        response = requests.get(api_url, headers=header)
         response.raise_for_status()
         if response.status_code == 200:
             return response.json()
