@@ -67,7 +67,7 @@ scopes = [
 ]
 
 flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(json_file, scopes=scopes)
-flow.redirect_uri = "http://127.0.0.1:8080/auth/google/callback"  # use value from config
+flow.redirect_uri = "https://docify-ai.the-runtime.me/auth/google/callback"  # use value from config
 
 
 def get_user_info(req: Request):
