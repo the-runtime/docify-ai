@@ -108,11 +108,12 @@ class OpenAIHandler:
                     if value_prompt:
                         prompt_var_text += f"path: {str(file_path)} \nDescription: {value_prompt}\n"
                         prompt_text = prompt.format(prompt_var_text)
-                    # tasks.append(
-                    #     asyncio.create_task(
-                    #         self.generate_text(str(child.relative_to(working_folder)), prompt_text, self.tokens)
-                    #     )
-                    # )
+                        tasks.append(
+                            asyncio.create_task(
+                                self.generate_text(str(child.relative_to(working_folder)), prompt_text, self.tokens)
+                            )
+                        )
+                        continue
                 elif child.is_dir():
                     for file_child in child.rglob("*"):
                         if file_child.is_file():
@@ -122,12 +123,13 @@ class OpenAIHandler:
                                 prompt_var_text += f"path: {file_path} \nDescription: {value_prompt}\n"
                                 prompt_text = prompt.format(prompt_var_text)
 
-                tasks.append(
-                    asyncio.create_task(
-                        self.generate_text(str(child.relative_to(temp_dir)), prompt_text,
-                                           self.tokens)
-                    )
-                )
+                                tasks.append(
+                                    asyncio.create_task(
+                                        self.generate_text(str(child.relative_to(temp_dir)), prompt_text,
+                                                           self.tokens)
+                                    )
+                                )
+                                continue
         final_result = []
         results = await asyncio.gather(*tasks)
 
