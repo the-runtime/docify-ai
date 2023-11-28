@@ -33,6 +33,7 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
 
     # user associated with the user_id
     user_info = db.Session.query(db_models.User).filter_by(id=user_id).first()
+    logger.debug(user_info.username)
 
     temp_dir = get_repo.clone_repo(url, branch)
     working_path = utils.get_working_path_of_project(working_folder, Path(temp_dir))
@@ -82,11 +83,11 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
         # logger.info(f"Code summaries returned:\n{code_details[:5]}")
 
     except Exception as excinfo:
+        emailNotify.send_mail_to_user(is_success=False, api_key=env_var.brevo_key, user_info=user_info)
         logger.error(
             f"Exception: {excinfo}\n"
         )
     finally:
-        emailNotify.send_mail_to_user(is_success=False, api_key=env_var.brevo_key, user_info=user_info)
         await llm.close()
 
     logger.info("Docify-ai execution completes.")
