@@ -43,3 +43,5 @@ rq
 redis
 
 azure-storage-blob
+
+git+https://github.com/sendinblue/APIv3-python-library.git

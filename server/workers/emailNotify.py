@@ -1,0 +1,43 @@
+from typing import Any
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
+from docifyai.core import logger
+
+logger = logger.Logger(__name__)
+
+
+def send_mail_to_user(is_success: bool, api_key: str, user_info: Any, file_name: str = ""):
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = api_key
+
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+
+    sender = {"name": "docify-ai", "email": "service@the-runtime.me"}
+    reply_to = {"name": "Tabish", "email": "tabishhassan1oo@gmail.com"}
+    if is_success:
+        file_url = f"https://docify-ai.the-runtime.me/api/getdoc/?blob_name={file_name}"
+        subject = "Document successfully generated"
+        html_content = f"""<html><body>
+            <h1>Document generation successful </h1>
+            <p><a href={file_url}>Download document </a>or copy and paste the below link in browser</p>
+        <a href="{file_url}"> {file_url} </a>
+        </body></html>
+        """
+    else:
+        subject = "Document generation unsuccessful"
+        html_content = """
+            <html><body>
+                <h1>Document generation unsuccessful </h1>
+                <p>Document generation failed, retry after some time or reply to this mail if problem persists.</p>
+            </body></html>
+            """
+    to = [{"email": user_info.email, "name": user_info.username}]
+    # params = {"parameter": "My param value", "subject": "New Subject"}
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, html_content=html_content, sender=sender, reply_to=reply_to,
+                                                   subject=subject)
+
+    try:
+        api_response = api_instance.send_transac_email(send_smtp_email)
+        logger.info(api_response)
+    except ApiException as e:
+        logger.error("Exception when calling SMTPApi->send_transac_email: %s\n" % e)

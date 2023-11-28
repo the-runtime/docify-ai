@@ -19,6 +19,7 @@ class enVar:
             self.temperature = os.getenv("TEMPERATURE")
             self.github_token = os.getenv("GITHUB_TOKEN")
             self.postgres_url = os.getenv("POSTGRES_URL")
+            self.brevo_key = os.getenv("BREVO_KEY")
         else:
             logger.error("Problem loading env file, make sure it is available")
             sys.exit()
