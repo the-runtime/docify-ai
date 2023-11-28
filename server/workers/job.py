@@ -71,6 +71,8 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
         doc_name = document.create_document()
         blobcontroller.upload_to_azure_blob(doc_name, blob_configs)
         logger.info(f"Document Created and saved to azure: {doc_name}")
+        emailNotify.send_mail_to_user(is_success=True, api_key=env_var.brevo_key, user_name=user_name,
+                                      user_email=user_email, file_name=doc_name)
 
         single_history = db_models.History(
             user_id=user_id,
@@ -81,8 +83,6 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
         db.Session.commit()
         db.Session.flush()
         db.Session.close()
-        emailNotify.send_mail_to_user(is_success=True, api_key=env_var.brevo_key, user_name=user_name,
-                                      user_email=user_email, file_name=doc_name)
         # logger.info(f"Code summaries returned:\n{code_details[:5]}")
 
     except Exception as excinfo:
