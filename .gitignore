@@ -3,5 +3,6 @@ venv2/
 venv/
 *.docx
 __pycache__/**/
+**__pychace__/**/
 *.env
 google_api_client.json

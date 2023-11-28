@@ -78,12 +78,13 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
         db.Session.commit()
         db.Session.flush()
         db.Session.close()
-        emailNotify.send_mail_to_user(is_success=True, api_key=env_var.brevo_key, user_info=user_info,
-                                      file_name=doc_name)
+        emailNotify.send_mail_to_user(is_success=True, api_key=env_var.brevo_key, user_name=user_info.username,
+                                      user_email=user_info.email, file_name=doc_name)
         # logger.info(f"Code summaries returned:\n{code_details[:5]}")
 
     except Exception as excinfo:
-        emailNotify.send_mail_to_user(is_success=False, api_key=env_var.brevo_key, user_info=user_info)
+        emailNotify.send_mail_to_user(is_success=False, api_key=env_var.brevo_key, user_name=user_info.username,
+                                      user_email=user_info.email)
         logger.error(
             f"Exception: {excinfo}\n"
         )

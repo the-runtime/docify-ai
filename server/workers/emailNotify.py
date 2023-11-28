@@ -6,7 +6,7 @@ from docifyai.core import logger
 logger = logger.Logger(__name__)
 
 
-def send_mail_to_user(is_success: bool, api_key: str, user_info: Any, file_name: str = ""):
+def send_mail_to_user(is_success: bool, api_key: str, user_name: str, user_email: str, file_name: str = ""):
     configuration = sib_api_v3_sdk.Configuration()
     configuration.api_key['api-key'] = api_key
 
@@ -31,7 +31,7 @@ def send_mail_to_user(is_success: bool, api_key: str, user_info: Any, file_name:
                 <p>Document generation failed, retry after some time or reply to this mail if problem persists.</p>
             </body></html>
             """
-    to = [{"email": user_info.email, "name": user_info.username}]
+    to = [{"email": user_email, "name": user_name}]
     # params = {"parameter": "My param value", "subject": "New Subject"}
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, html_content=html_content, sender=sender, reply_to=reply_to,
                                                    subject=subject)
