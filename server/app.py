@@ -101,10 +101,8 @@ async def google_auth_callback(req: Request):
         return HTMLResponse("Error while verifying")
 
     token = flow.fetch_token(code=openid_code)
-    # print(token)
     get_usr_url = "https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.get("access_token")
     user_info_resp = requests.get(url=get_usr_url)
-    # print(user_info.text)
     if user_info_resp.status_code == status.HTTP_200_OK:
         user_info = user_info_resp.json()
         req.session["user_id"] = user_info.get("id")
@@ -113,9 +111,10 @@ async def google_auth_callback(req: Request):
             logger.debug("user_db found don't know how")
             return RedirectResponse("/app/dashboard", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
         # use logic to check if user exists on database
+        logger.info(user_info)
         new_user = models.User(
             id=user_info.get("id"),
-            username=user_info.get("username"),
+            username=user_info.get("name"),
             email=user_info.get("email"),
             img_url=user_info.get("picture"),
             credits=1000,
