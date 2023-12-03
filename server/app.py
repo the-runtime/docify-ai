@@ -63,6 +63,7 @@ app.add_middleware(SessionMiddleware, secret_key=env_var.server_secret_key)  # t
 json_file = env_var.google_json_file
 scopes = [
     'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/userinfo.email'
     'openid'
 ]
 
