@@ -49,10 +49,10 @@ class OpenAIHandler:
         # to be imported from env
         self.api_key = env_var.azure_openai_key
 
-    async def code_to_text(
+    async def read_code(
             self, ignore: dict, files: Dict[Path, str], prompt: str, depend_dict: Dict[Path, List[Path]]
     ) -> List[Tuple]:
-        """converts code to natural language by using large language model"""
+        """ give brief summary of the code """
 
         tasks = []
         for path, contents in files.items():
@@ -93,6 +93,11 @@ class OpenAIHandler:
             else:
                 filter_results.append(result)
         return filter_results
+
+    async def get_chapters(self, code_details: Dict[str, str], temp_dir: str, prompt: str) -> List[Tuple[str, str]]:
+        tasks = []
+
+        return [("q", "q")]
 
     async def folder_to_text(self, code_details: Dict[str, str], working_folder: Path, temp_dir: str, prompt: str) -> \
             List[Tuple[str, str]]:

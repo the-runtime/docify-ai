@@ -115,7 +115,7 @@ async def google_auth_callback(req: Request):
         # use logic to check if user exists on database
         new_user = models.User(
             id=user_info.get("id"),
-            username=user_info.get("name"),
+            username=user_info.get("username"),
             email=user_info.get("email"),
             img_url=user_info.get("picture"),
             credits=1000,

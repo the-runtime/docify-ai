@@ -203,6 +203,8 @@ def get_folders_prompt() -> str:
 
 
 def get_implementation_prompt() -> str:
-    return """Offer a detailed explanation of the code Aim for point-wise explanation of the implementation of the 
-    code, taking reference of point from the 'Files referenced from the main file'' Path: {0} Contents: {1} Files 
-    referenced from the main file:{2}"""
+    return """Offer a brief explanation of the code,
+    taking reference of point from the 'Files referenced from the main file'' Path: {0} Contents: {1} Files 
+    referenced from the main file:{2}
+    respond in no more than 200 words.
+    """
