@@ -1,0 +1,25 @@
+/* Styling for the login and signup container */
+.login-signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Styling for the authentication card */
+.auth-card {
+    width: 300px;
+    padding: 20px;
+    text-align: center;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling for the Google login button */
+.google-login-button {
+    background-color: #4285f4; /* Google blue */
+    color: #fff;
+    margin-top: 20px;
+}

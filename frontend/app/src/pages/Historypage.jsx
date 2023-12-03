@@ -1,0 +1,47 @@
+import React, {useEffect, useState} from "react";
+import DocumentHistoryCard from "@/components/HistoryCard";
+import Basepage from "@/pages/Basepage";
+import {daDK} from "@mui/material/locale";
+
+function History() {
+    const [histories, setHistories] = useState()
+   useEffect(() => {
+       fetchHistoryInfo().then(data => {
+           setHistories(data.history)
+       })
+   }, [])
+    if (!histories){
+        return null
+    }
+
+    return (
+        <div className="dashboard-container">
+            <DocumentHistoryCard >
+                {histories}
+            </DocumentHistoryCard>
+        </div>
+    )
+}
+
+
+const fetchHistoryInfo = async () => {
+    const serv_add = import.meta.env.VITE_SERVER_ADDRESS
+    try {
+        const resp = await fetch(`${serv_add}/api/history`)
+        if (resp.ok) {
+            return await resp.json()
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const HistoryPage = (() => {
+    return (
+        <Basepage name="History">
+            <History />
+        </Basepage>
+    )
+})
+
+export default HistoryPage
