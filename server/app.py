@@ -101,7 +101,7 @@ async def google_auth_callback(req: Request):
         return HTMLResponse("Error while verifying")
 
     token = flow.fetch_token(code=openid_code)
-    get_usr_url = "https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.get("access_token")
+    get_usr_url = "https://www.googleapis.com/oauth2/v2/userinfo.email?access_token=" + token.get("access_token")
     user_info_resp = requests.get(url=get_usr_url)
     if user_info_resp.status_code == status.HTTP_200_OK:
         user_info = user_info_resp.json()
