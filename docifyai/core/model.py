@@ -157,6 +157,14 @@ class OpenAIHandler:
         else:
             return result
 
+    @retry(
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=1, min=10, max=30),
+        retry=(
+                retry_if_exception_type(Exception)
+                | retry_if_exception_type(httpx.HTTPStatusError)
+        ),
+    )
     async def generate_text(
             self, index: str, prompt: str, tokens: int
     ) -> Tuple[str, str]:
@@ -206,6 +214,7 @@ class OpenAIHandler:
 
         except httpx.HTTPStatusError as excinfo:
             self.logger.error(f"HTTPStatus Exception:\n{str(excinfo)}")
+            self.logger.error(f"retry after: {excinfo.response.headers}")
             return await self.null_summary(
                 index, f"HTTPStatus Exception: {excinfo.response.status_code}"
             )
