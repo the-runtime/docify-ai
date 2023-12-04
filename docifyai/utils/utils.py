@@ -1,8 +1,16 @@
 from pathlib import Path
 from typing import Dict, Tuple, List
 from docifyai.core import logger
+import json
 
 logger = logger.Logger(__name__)
+
+
+def get_code_from_gpt_response(data: str) -> Dict:
+    start = data.find("```")
+    end = data.rfind("```")
+    ret_string = data[start + 3:end]
+    return json.JSONDecoder().decode(ret_string)
 
 
 def change_tuple_to_dict(sample: List[Tuple[str, str]]) -> Dict[str, str]:
@@ -16,6 +24,26 @@ def get_working_path_of_project(repo_path: str, base_folder: Path) -> Path:
     logger.debug(base_folder.joinpath(repo_path))
     base_folder.joinpath(repo_path)
     return base_folder.joinpath(repo_path)
+
+
+def get_intro_prompt() -> str:
+    return """Give the purpose of the project and tell about what it does and serves to end user. Also offer a 
+    comprehensive architectural design and other aspects of the software project that encapsulates the core 
+    functionalities of the project given the details of the packages and files inside it. Details: {0}"""
+
+
+def get_folders_prompt() -> str:
+    return """Offer a detailed higher level (don't talk about implementation and programming) examination of what the 
+    purpose of the folder/package of which the implementation details is provided below along with its relative 
+    position. Assume it is for normal non technical person. {0}"""
+
+
+def get_implementation_prompt() -> str:
+    return """Offer a brief explanation of the code,
+    taking reference of point from the 'Files referenced from the main file'' Path: {0} Contents: {1} Files 
+    referenced from the main file:{2}
+    respond in no more than 200 words.
+    """
 
 
 def should_ignore(file_path: Path) -> bool:
@@ -190,21 +218,3 @@ def get_ignore_files() -> Dict[str, list[str]]:
     return ignore_files
 
 
-def get_intro_prompt() -> str:
-    return """Give the purpose of the project and tell about what it does and serves to end user. Also offer a 
-    comprehensive architectural design and other aspects of the software project that encapsulates the core 
-    functionalities of the project given the details of the packages and files inside it. Details: {0}"""
-
-
-def get_folders_prompt() -> str:
-    return """Offer a detailed higher level (don't talk about implementation and programming) examination of what the 
-    purpose of the folder/package of which the implementation details is provided below along with its relative 
-    position. Assume it is for normal non technical person. {0}"""
-
-
-def get_implementation_prompt() -> str:
-    return """Offer a brief explanation of the code,
-    taking reference of point from the 'Files referenced from the main file'' Path: {0} Contents: {1} Files 
-    referenced from the main file:{2}
-    respond in no more than 200 words.
-    """

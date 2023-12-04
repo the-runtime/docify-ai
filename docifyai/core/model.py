@@ -37,7 +37,7 @@ class OpenAIHandler:
         self.cache = TTLCache(maxsize=500, ttl=600)
         self.http_client = httpx.AsyncClient(
             http2=True,
-            timeout=30,
+            timeout=300,
             limits=httpx.Limits(
                 max_keepalive_connections=10, max_connections=100
             ),
