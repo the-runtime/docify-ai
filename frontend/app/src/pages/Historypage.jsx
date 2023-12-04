@@ -26,7 +26,10 @@ function History() {
 const fetchHistoryInfo = async () => {
     const serv_add = import.meta.env.VITE_SERVER_ADDRESS
     try {
-        const resp = await fetch(`${serv_add}/api/history`)
+        const resp = await fetch(`${serv_add}/api/history`, {
+            method: 'Get',
+            credentials: 'include'
+        })
 
         if (resp.ok) {
             return await resp.json()
