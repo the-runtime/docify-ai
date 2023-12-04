@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Card, CardContent, Typography} from '@mui/material';
+import {Link } from "react-router-dom"
 import './Settings.css';
 import Basepage from "./Basepage";
 
 function Settings() {
+    const serv_add = import.meta.env.VITE_SERVER_ADDRESS
     const [data, setData] = useState()
     useEffect(() => {
         getUserInfo().then(data => {
@@ -27,12 +29,14 @@ function Settings() {
                         <Typography variant="body2">Email:{data.email}</Typography>
                         <Typography variant="body2">Remaining Credits: {data.credits}</Typography>
                     </div>
-                    <Button variant="contained" color="primary" onClick={handleSignOut}>
-                        Sign Out
-                    </Button>
-                    <Button variant="contained" color="error" onClick={handleDeleteAccount}>
-                        Delete Account
-                    </Button>
+                    <Link to={`${serv_add}/api/logout`}>
+                        <Button variant="contained" color="primary" onClick={handleSignOut}>
+                            Sign Out
+                        </Button>
+                    </Link>
+                    {/*<Button variant="contained" color="error" onClick={handleDeleteAccount}>*/}
+                    {/*    Delete Account*/}
+                    {/*</Button>*/}
                 </CardContent>
             </Card>
         </div>
@@ -56,7 +60,7 @@ async function getUserInfo() {
 }
 function handleSignOut() {
     // Handle sign-out functionality here
-    console.log('User clicked Sign Out');
+
 }
 
 function handleDeleteAccount() {

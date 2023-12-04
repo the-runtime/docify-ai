@@ -138,6 +138,16 @@ async def google_auth_callback(req: Request):
 #         return HTMLResponse("Success :" + str(user_info))
 #
 
+@app.get("/api/logout")
+def delete_session(req: Request, user_info: dict = Depends(get_user_info)):
+    if user_info is None:
+        return JSONResponse("Not authenticated", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+    if "user_id" in req.session:
+        del req.session['user_id']
+    return RedirectResponse("/app/login", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+
+# @app.get("api/delete")
+# def delete_account()
 @app.get("/api/checkauth")
 def check_auth(user_info: dict = Depends(get_user_info)):
     if user_info is None:
