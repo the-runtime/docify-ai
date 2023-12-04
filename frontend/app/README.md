@@ -9,6 +9,14 @@ In the project directory, you can run:
 ### `npm start`
 
 Runs the app in the development mode.\
+Use .env file to give server_address to the app
+```
+VITE_SERVER_ADDRESS=https://yourdomain.exc
+
+//for running in local environment
+VITE_SERVER_ADDRESS=https://127.0.0.1:3000
+
+```
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\

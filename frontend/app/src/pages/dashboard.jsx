@@ -95,14 +95,6 @@ function Dashboard() {
                        </FormControl>
                         <p>Selected Branch: {selectedOption}</p>
 
-                        <p>Select project Entry point</p>
-                        <TextField
-                            label="Repository URL"
-                            variant="outlined"
-                            fullWidth
-                            value={entryPath}
-                            onChange={(e) => setEntryPath(e.target.value)}
-                        />
                         {/*use fecth to give info to the fastapi server*/}
                         <Link to={`${serv_add}/api/document/?url=${repoUrl}&&branch=${selectedOption}&&work_dir=${entryPath}`}>
                             <Button variant="contained" color="primary">

@@ -7,7 +7,7 @@ export default defineConfig({
   root: 'src',
   base: '/app/',
   build: {
-    outDir: '../dist',
+    outDir: '../Dist',
     assetsDir: 'assetsapp',
     rollupOptions: {
       input: 'src/App.html'
