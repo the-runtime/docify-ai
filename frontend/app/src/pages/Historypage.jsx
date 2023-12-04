@@ -8,6 +8,7 @@ function History() {
    useEffect(() => {
        fetchHistoryInfo().then(data => {
            setHistories(data.history)
+           console.log(data)
        })
    }, [])
     if (!histories){
@@ -16,9 +17,7 @@ function History() {
 
     return (
         <div className="dashboard-container">
-            <DocumentHistoryCard >
-                {histories}
-            </DocumentHistoryCard>
+            <DocumentHistoryCard documentHistory={histories}/>
         </div>
     )
 }
