@@ -40,7 +40,7 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
 
     temp_dir = get_repo.clone_repo(url, branch)
     working_path = utils.get_working_path_of_project(working_folder, Path(temp_dir))
-    llm = model.OpenAIHandler(env_var)
+    llm = model.OpenAIHandler(env_var, temp_dir)
 
     try:
         files = repo_parse.get_files(temp_dir)
