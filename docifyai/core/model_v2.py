@@ -4,6 +4,7 @@ from typing import Dict, Tuple, List
 from pathlib import Path
 import httpx
 from docifyai.core import logger
+from docifyai.utils import utils
 import openai
 from cachetools import TTLCache
 
@@ -13,6 +14,7 @@ from tenacity import (
     retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
+    wait_fixed
 )
 from docifyai.core.tokens import get_token_count, truncate_tokens
 from docifyai.config import config
@@ -23,8 +25,10 @@ class OpenAIHandler:
 
     logger = logger.Logger(__name__)
 
-    def __init__(self, env_var: config.enVar):
+    def __init__(self, env_var: config.enVar, temp_dir: str):
         """Initialize the OpenAi Handler"""
+
+        self.temp_dir = Path(temp_dir)
 
         # should come from config rather than hard coded
         self.endpoint = env_var.model_endpoint
@@ -33,11 +37,11 @@ class OpenAIHandler:
         self.tokens = int(env_var.tokens)
         self.tokens_max = int(env_var.max_tokens)
         self.temperature = float(env_var.temperature)
-        self.rate_limit = 5
+        self.rate_limit = 3  # 5
         self.cache = TTLCache(maxsize=500, ttl=600)
         self.http_client = httpx.AsyncClient(
             http2=True,
-            timeout=30,
+            timeout=300,
             limits=httpx.Limits(
                 max_keepalive_connections=10, max_connections=100
             ),
@@ -52,7 +56,7 @@ class OpenAIHandler:
     async def read_code(
             self, ignore: dict, files: Dict[Path, str], prompt: str, depend_dict: Dict[Path, List[Path]]
     ) -> List[Tuple]:
-        """ give brief summary of the code """
+        """ give 2 or three lines of  summary of the code """
 
         tasks = []
         for path, contents in files.items():
@@ -73,13 +77,14 @@ class OpenAIHandler:
                     depend_content = files.get(file_path)
                     if depend_content:
                         prompt_3rd += f"Path: {file_path} \nContents: {depend_content}"
+            # not using prompt_3rd as depend files is not used now
             prompt_3rd += "]"
-            prompt_code = prompt.format(str(path), contents, prompt_3rd)
+            prompt_code = prompt.format(str(path), contents)
             # print(prompt_code)
             # prompt_code = f"{prompt}"
             tasks.append(
                 asyncio.create_task(
-                    self.generate_text(str(path), prompt_code, self.tokens)
+                    self.generate_text(str(path), prompt_code, self.tokens, utils.get_role_content(0))
                 )
             )
 
@@ -94,50 +99,57 @@ class OpenAIHandler:
                 filter_results.append(result)
         return filter_results
 
-    async def get_chapters(self, code_details: Dict[str, str], temp_dir: str, prompt: str) -> List[Tuple[str, str]]:
+    async def get_initial_overview_of_project(self, code_details: Dict[str, str], prompt: str) -> str | None:
+        """some info might get truncated due to excess number of tokens"""
+        """may need to breakdown so that all info is accounted in the formation of initial_overview"""
+        temp_prompt = ""
+        for code_path, code_sum in code_details.items():
+            temp_prompt += f"Path: {code_path}\nCode Summary: {code_details}\n"
+        prompt_final = prompt.format(temp_prompt)
+        result = await self.generate_text("Basic Understanding", prompt_final, self.tokens, utils.get_role_content(1))
+        if isinstance(result, Exception):
+            self.logger.error("Error getting initial overview of the ")
+            return None
+        return result[1]
+
+    async def get_chapters_name(self, init_overview, code_details: Dict[str, str], prompt: str) -> Dict[str, List[
+        str]] | None:
+        """Use chat-gpt to get the chapters required
+        Use code_info alongside initial_overview to generate chapters with path of files associated with it
+        something like
+            token_ratio = tokencount(info) / max_tokens
+            if token_ratio >= 1:
+                for info in infos:
+                    info = truncate(info relative to ratio)
+
+        """
+        """ we should use code_details as json for gpt to have better understanding of it"""
+        json_code_details = utils.dict_to_json(code_details)
+        final_prompt = prompt.format(init_overview, json_code_details)
+        result = await self.generate_text("Chapters", final_prompt, self.tokens, utils.get_role_content(2))
+        if isinstance(result, Exception):
+            self.logger.error("Error getting chapters for the project documentation")
+            return None
+        return utils.get_json_from_gpt_response(result[1])
+
+    async def get_chapter_contents(self, init_overview: str, contents: Dict[str, list[str]], files: Dict[Path, str],
+                                   prompt: str) -> List[Tuple[str, str]]:
+        """Returns content of chapters"""
         tasks = []
-
-        return [("q", "q")]
-
-    async def folder_to_text(self, code_details: Dict[str, str], working_folder: Path, temp_dir: str, prompt: str) -> \
-            List[Tuple[str, str]]:
-        """Generates text using prompts and azure OpenAI's GPT model"""
-        # use prompt text instead of empty string
-        tasks = []
-        if working_folder.is_dir():  # always true as this is the initial directory of the project
-            for child in working_folder.iterdir():
-                prompt_var_text = ""
-                if child.is_file():
-                    value_prompt = code_details.get(str(child.relative_to(temp_dir)))
-                    file_path = str(child.relative_to(working_folder))
-                    if value_prompt:
-                        prompt_var_text += f"path: {str(file_path)} \nDescription: {value_prompt}\n"
-                        prompt_text = prompt.format(prompt_var_text)
-                        tasks.append(
-                            asyncio.create_task(
-                                self.generate_text(str(child.relative_to(working_folder)), prompt_text, self.tokens)
-                            )
-                        )
-                        continue
-                elif child.is_dir():
-                    for file_child in child.rglob("*"):
-                        if file_child.is_file():
-                            value_prompt = code_details.get(str(file_child.relative_to(temp_dir)))
-                            file_path = str(file_child.relative_to(working_folder))
-                            if value_prompt:
-                                prompt_var_text += f"path: {file_path} \nDescription: {value_prompt}\n"
-                                prompt_text = prompt.format(prompt_var_text)
-
-                                tasks.append(
-                                    asyncio.create_task(
-                                        self.generate_text(str(child.relative_to(temp_dir)), prompt_text,
-                                                           self.tokens)
-                                    )
-                                )
-                                continue
+        for chapter_name, chapter_files in contents.items():
+            # path in chapter_files is relative
+            temp_prompt = ""
+            for req_file in chapter_files:
+                temp_file = Path(req_file)
+                temp_prompt += f"File Path: {req_file}\nCode: {files[temp_file]}"
+            final_prompt = prompt.format(chapter_name, init_overview, temp_prompt)
+            tasks.append(
+                asyncio.create_task(
+                    self.generate_text(chapter_name, final_prompt, self.tokens, utils.get_role_content(3))
+                )
+            )
         final_result = []
         results = await asyncio.gather(*tasks)
-
         for result in results:
             if isinstance(result, Exception):
                 self.logger.error("Task failed with exception: ", result)
@@ -146,24 +158,46 @@ class OpenAIHandler:
 
         return final_result
 
-    async def get_text_for_intro(self, folder_details: Dict[str, str], prompt: str) -> Tuple[str, str]:
-        prompt_str = ""
-        for name, text in folder_details.items():
-            if Path(name).is_file():
-                prompt_str += f"Filename: {name}\nDetails: {text}\n"
+    async def get_intro_content(self, init_overview: str, chapter_contents: List[Tuple[str, str]],
+                                compression_prompt: str, intro_prompt: str) -> str:
+        """Pass compressed version of contents of the all the chapters in the project
+        to get a proper intro to the project"""
+        tasks = []
+        for name, contents in chapter_contents:
+            final_prompt = compression_prompt.format(init_overview, contents)
+            tasks.append(
+                asyncio.create_task(self.generate_text(name, final_prompt, self.tokens, utils.get_role_content(4)))
+            )
+        results = await asyncio.gather(*tasks)
+        compressed_contents = []
+
+        for result in results:
+            if isinstance(result, Exception):
+                self.logger.error("Task failed with exception: ", result)
             else:
-                prompt_str += f"Package/Folder name: {str}\n Details: {text}\n"
-        prompt_final = prompt.format(prompt_str)
+                compressed_contents.append(result)
 
-        result = await self.generate_text("Introduction", prompt_final, self.tokens)
-        if isinstance(result, Exception):
-            self.logger.error("Error getting Intro for the project ", result)
-            return "Introduction", ""
-        else:
-            return result
+        temp_prompt = ""
+        for content in compressed_contents:
+            temp_prompt += f"Chapter Name: {content[0]}\nChapter Overview: {content[1]}\n"
 
+        final_prompt = intro_prompt.format(init_overview, temp_prompt)
+
+        _, intro = await self.generate_text("Intro", final_prompt, self.tokens, utils.get_role_content(4))
+
+        return intro
+
+    @retry(
+        stop=stop_after_attempt(5),
+        wait=wait_fixed(30),
+        # wait_exponential(multiplier=1, min=10, max=30),
+        retry=(
+                retry_if_exception_type(Exception)
+                | retry_if_exception_type(httpx.HTTPStatusError)
+        ),
+    )
     async def generate_text(
-            self, index: str, prompt: str, tokens: int
+            self, index: str, prompt: str, tokens: int, role_contents: str
     ) -> Tuple[str, str]:
         """Handles the request to the OpenAi API to generate text"""
         try:
@@ -180,7 +214,7 @@ class OpenAIHandler:
                         "messages": [
                             {
                                 "role": "system",
-                                "content": "You are an automatic code documentation generator, which generates documentation in docx format.",
+                                "content": role_contents,
                             },
                             {
                                 "role": "user", "content": prompt,
@@ -195,9 +229,9 @@ class OpenAIHandler:
                 data = response.json()
                 summary = data["choices"][0]["message"]["content"]
 
-                # self.logger.info(
-                #     f"\nProcessing prompt: {index}\nResponse: {summary}"
-                # )
+                self.logger.info(
+                    f"\nProcessing prompt: {index}\nResponse: {summary}"
+                )
                 self.cache[prompt] = summary
                 return index, summary
 

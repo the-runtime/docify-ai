@@ -1,3 +1,6 @@
+"""Not used in newer versions of docify-ai"""
+
+
 import asyncio
 import time
 from typing import Dict, Tuple, List
@@ -12,6 +15,7 @@ from tenacity import (
     retry,
     retry_if_exception_type,
     stop_after_attempt,
+    wait_fixed,
     wait_exponential,
 )
 from docifyai.core.tokens import get_token_count, truncate_tokens
@@ -33,11 +37,11 @@ class OpenAIHandler:
         self.tokens = int(env_var.tokens)
         self.tokens_max = int(env_var.max_tokens)
         self.temperature = float(env_var.temperature)
-        self.rate_limit = 5
+        self.rate_limit = 3
         self.cache = TTLCache(maxsize=500, ttl=600)
         self.http_client = httpx.AsyncClient(
             http2=True,
-            timeout=300,
+            timeout=600,
             limits=httpx.Limits(
                 max_keepalive_connections=10, max_connections=100
             ),
@@ -159,7 +163,8 @@ class OpenAIHandler:
 
     @retry(
         stop=stop_after_attempt(5),
-        wait=wait_exponential(multiplier=1, min=10, max=30),
+        wait=wait_fixed(30),
+        # wait_exponential(multiplier=1, min=10, max=30),
         retry=(
                 retry_if_exception_type(Exception)
                 | retry_if_exception_type(httpx.HTTPStatusError)
@@ -198,9 +203,9 @@ class OpenAIHandler:
                 data = response.json()
                 summary = data["choices"][0]["message"]["content"]
 
-                # self.logger.info(
-                #     f"\nProcessing prompt: {index}\nResponse: {summary}"
-                # )
+                self.logger.info(
+                    f"\nProcessing prompt: {index}\nResponse: {summary}"
+                )
                 self.cache[prompt] = summary
                 return index, summary
 
