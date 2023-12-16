@@ -56,7 +56,7 @@ def run_workers(env_config,
         # Create a connection to the Redis server
         redis_conn = Redis(host=env_config.redis_host, port=env_config.redis_port, password=env_config.redis_password)
         worker = Worker(env_config.redis_queue_name, connection=redis_conn)
-        worker.work(max_idle_time=60)
+        worker.work(with_scheduler=True)
 
     except Exception as excinfo:
         logger.error(f"Worker encountered as error: {excinfo}")
