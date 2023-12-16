@@ -29,7 +29,7 @@ azure_blob_strings = [
     env_var.blob_container_name
 ]
 redis_conn = Redis(host=env_var.redis_host, port=env_var.redis_port, password=env_var.redis_password)
-job_que = Queue(name=env_var.redis_queue_name, connection=redis_conn)
+job_que = Queue(name=env_var.redis_queue_name, connection=redis_conn, default_timeout=60*10)
 
 app = FastAPI()
 db = database.Database(env_var.postgres_url)
@@ -211,7 +211,7 @@ async def generate_doc(url: str, branch: str, work_dir: str, user_id: str = Depe
     if not user_id:
         return "Not authenticated"  # also add status type for client to handle it gracefully
     logger.info("User_id is ", user_id)  # here some error is happening
-    doc_job = job_que.enqueue(job.docify_job, url, branch, azure_blob_strings, user_id, work_dir, timeout=60*10)
+    doc_job = job_que.enqueue(job.docify_job, url, branch, azure_blob_strings, user_id, work_dir)
     # return "Process started"
     return RedirectResponse("/app/dashboard", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
 
