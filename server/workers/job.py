@@ -70,7 +70,6 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
 
         document = Aidoc(repo_info, temp_dir, chapter_contents, project_intro)
         # will use path for letting user download it
-        doc_name = document.create_document()
 
         # will use path for letting user download it
         doc_name = document.create_document()

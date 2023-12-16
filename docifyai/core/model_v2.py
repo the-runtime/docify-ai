@@ -189,8 +189,8 @@ class OpenAIHandler:
 
     @retry(
         stop=stop_after_attempt(5),
-        wait=wait_fixed(30),
-        # wait_exponential(multiplier=1, min=10, max=30),
+        # wait=wait_fixed(30),
+        wait=wait_exponential(multiplier=1, min=10, max=30),
         retry=(
                 retry_if_exception_type(Exception)
                 | retry_if_exception_type(httpx.HTTPStatusError)
