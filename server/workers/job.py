@@ -65,10 +65,10 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
         """ Do something to maintain orders of the chapters """
         chapter_contents = await llm.get_chapter_contents(init_overview, chapter_names, files,
                                                           utils.get_prompt_for_chapter_contents())
-        project_intro = await llm.get_intro_content(init_overview, chapter_contents, utils.get_compression_prompt(),
-                                                    utils.get_prompt_for_project_intro())
+        # project_intro = await llm.get_intro_content(init_overview, chapter_contents, utils.get_compression_prompt(),
+        #                                             utils.get_prompt_for_project_intro())
 
-        document = Aidoc(repo_info, temp_dir, chapter_contents, project_intro)
+        document = Aidoc(repo_info, temp_dir, chapter_contents, init_overview)
         # will use path for letting user download it
 
         # will use path for letting user download it
