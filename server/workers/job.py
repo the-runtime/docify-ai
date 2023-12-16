@@ -86,8 +86,8 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
 
         db.Session.add(single_history)
         db.Session.commit()
-        db.Session.flush()
-        db.Session.close()
+        # db.Session.flush()
+        # db.Session.close()
         # logger.info(f"Code summaries returned:\n{code_details[:5]}")
 
     except Exception as excinfo:
@@ -98,6 +98,7 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
         )
     finally:
         await llm.close()
+        db.session.close()
 
     logger.info("Docify-ai execution completes.")
 
