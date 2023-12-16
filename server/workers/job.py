@@ -98,7 +98,7 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
         )
     finally:
         await llm.close()
-        db.session.close()
+        db.Session.close()
 
     logger.info("Docify-ai execution completes.")
 

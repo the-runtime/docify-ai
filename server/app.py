@@ -211,7 +211,7 @@ async def generate_doc(url: str, branch: str, work_dir: str, user_id: str = Depe
     if not user_id:
         return "Not authenticated"  # also add status type for client to handle it gracefully
     logger.info("User_id is ", user_id)  # here some error is happening
-    doc_job = job_que.enqueue(job.docify_job, url, branch, azure_blob_strings, user_id, work_dir)
+    doc_job = job_que.enqueue(job.docify_job, url, branch, azure_blob_strings, user_id, work_dir, timeout=60*10)
     # return "Process started"
     return RedirectResponse("/app/dashboard", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
 
