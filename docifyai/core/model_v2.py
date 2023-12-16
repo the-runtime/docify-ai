@@ -37,7 +37,7 @@ class OpenAIHandler:
         self.tokens = int(env_var.tokens)
         self.tokens_max = int(env_var.max_tokens)
         self.temperature = float(env_var.temperature)
-        self.rate_limit = 5  # 5
+        self.rate_limit = 7  # 5
         self.cache = TTLCache(maxsize=500, ttl=600)
         self.http_client = httpx.AsyncClient(
             http2=True,
