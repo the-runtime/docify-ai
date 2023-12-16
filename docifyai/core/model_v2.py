@@ -138,16 +138,21 @@ class OpenAIHandler:
         tasks = []
         for chapter_name, chapter_files in contents.items():
             # path in chapter_files is relative
-            temp_prompt = ""
-            for req_file in chapter_files:
-                temp_file = Path(req_file)
-                temp_prompt += f"File Path: {req_file}\nCode: {files[temp_file]}"
-            final_prompt = prompt.format(chapter_name, init_overview, temp_prompt)
-            tasks.append(
-                asyncio.create_task(
-                    self.generate_text(chapter_name, final_prompt, self.tokens, utils.get_role_content(3))
+            try:
+                temp_prompt = ""
+                for req_file in chapter_files:
+                    temp_file = Path(req_file)
+                    temp_prompt += f"File Path: {req_file}\nCode: {files[temp_file]}"
+                final_prompt = prompt.format(chapter_name, init_overview, temp_prompt)
+                tasks.append(
+                    asyncio.create_task(
+                        self.generate_text(chapter_name, final_prompt, self.tokens, utils.get_role_content(3))
+                    )
                 )
-            )
+            except Exception as excinfo:
+                # sometime gpt responds with non existing files
+                self.logger.error(excinfo)
+
         final_result = []
         results = await asyncio.gather(*tasks)
         for result in results:
