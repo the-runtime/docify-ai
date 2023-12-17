@@ -180,7 +180,8 @@ def get_api_userinfo(user_id: str = Depends(get_user_info)):
 def get_history(user_id: str = Depends(get_user_info)):
     if user_id is None:
         return JSONResponse("Not Authenticated", status_code=status.HTTP_401_UNAUTHORIZED)
-    user_db = db.Session.query(models.User).filter_by(id=user_id).first()
+    user_db = db.get_session().query(models.User).filter_by(id=user_id).first()
+
     if user_db:
         list_history = []
         download_history = user_db.docify_history

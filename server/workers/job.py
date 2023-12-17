@@ -82,9 +82,9 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
             user_id=user_id,
             filename=doc_name,
         )
-
-        db.Session.add(single_history)
-        db.Session.commit()
+        db_session = db.get_session()
+        db_session.add(single_history)
+        db_session.commit()
         # db.Session.flush()
         # db.Session.close()
         # logger.info(f"Code summaries returned:\n{code_details[:5]}")
@@ -97,7 +97,7 @@ async def docify_run(url: str, branch: str, blob_configs: List[str], user_id: st
         )
     finally:
         await llm.close()
-        db.Session.close()
+        db.get_session().close()
 
     logger.info("Docify-ai execution completes.")
 

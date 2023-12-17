@@ -15,4 +15,7 @@ class Database:
         return cls._instance
 
     def get_session(self) -> session:
+        self.Session.rollback()
         return self.Session
+
+
