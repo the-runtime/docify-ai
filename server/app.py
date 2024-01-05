@@ -93,6 +93,7 @@ def google_auth(req: Request):
 
 @app.get("/auth/google/callback")
 async def google_auth_callback(req: Request):
+    db_session = db.get_session()
     query_params = req.query_params
     openid_state = query_params.get("state")
     openid_code = query_params.get("code")
@@ -107,7 +108,7 @@ async def google_auth_callback(req: Request):
     if user_info_resp.status_code == status.HTTP_200_OK:
         user_info = user_info_resp.json()
         req.session["user_id"] = user_info.get("id")
-        user_db = db.Session.query(models.User).filter_by(id=user_info.get("id")).first()
+        user_db = db_session.query(models.User).filter_by(id=user_info.get("id")).first()
         if user_db:
             logger.debug("user_db found don't know how")
             return RedirectResponse("/app/dashboard", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
@@ -120,8 +121,8 @@ async def google_auth_callback(req: Request):
             img_url=user_info.get("picture"),
             credits=1000,
         )
-        db.Session.add(new_user)
-        db.Session.commit()
+        db_session.add(new_user)
+        db_session.commit()
         logger.info(f"New user named: {user_info.get('name')} added to database")
         return RedirectResponse("/app/dashboard", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
     else:

@@ -150,7 +150,7 @@ class OpenAIHandler:
                     )
                 )
             except Exception as excinfo:
-                # sometime gpt responds with non existing files
+                # sometime gpt responds with non-existing files
                 self.logger.error(excinfo)
 
         final_result = []
