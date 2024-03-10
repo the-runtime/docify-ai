@@ -1,7 +1,6 @@
 write a lsp client, implementing call to refrences and document link
-
+or just use static code analyzer for getting all the refrences
 use alembic python app to do database migrations
-
 
 
 https://www.googleapis.com/auth/userinfo.email" to "openid
