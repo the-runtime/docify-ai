@@ -9,6 +9,7 @@ from docifyai.core.preprocess import RepoParseFunc as repo_parse
 from docifyai.langaugeSupport import get_lang_support
 from docifyai.document.aiDoc_v2 import Aidoc
 from docifyai.config.config import enVar
+import shutil
 from server.database import database
 from server.model import models as db_models
 # import from server , have to change in future
@@ -23,22 +24,9 @@ async def docify_run() -> None:
 
     # load environment variables
     env_var = enVar()  # use config file
-    url = "https://github.com/the-runtime/serverDowndrive"
+    url = "https://github.com/the-runtime/subsearch"
     branch = "main"
     repo_info = get_repo.get_github_repo_metadata(url, env_var.github_token)
-
-    # logger.info(f"Repo info {repo_info}")
-
-    # db = database.Database(
-    #     env_var.postgres_url)  # use from env file
-    # db_session = db.get_session()
-
-    # user associated with the user_id
-    # user_info = db.Session.query(db_models.User).filter_by(id=user_id).first()
-
-    # user_name = user_info.username
-    # user_email = user_info.email
-    # logger.debug(user_info.username)
 
     temp_dir = get_repo.clone_repo(url, branch)
     # working_path = utils.get_working_path_of_project(working_folder, Path(temp_dir))
@@ -75,37 +63,17 @@ async def docify_run() -> None:
 
         # will use path for letting user download it
         doc_name = document.create_document()
-        # blobcontroller.upload_to_azure_blob(doc_name, blob_configs)
-        # logger.info(f"Document Created and saved to azure: {doc_name}")
-        # emailNotify.send_mail_to_user(is_success=True, api_key=env_var.brevo_key, user_name=user_name,
-        #                               user_email=user_email, file_name=doc_name)
+        shutil.copy(doc_name,"test.doc")
 
-        # single_history = db_models.History(
-        #     user_id=user_id,
-        #     filename=doc_name,
-        # )
-        # db_session = db.get_session()
-        # db_session.add(single_history)
-        # db_session.commit()
-        # db.Session.flush()
-        # db.Session.close()
-        # logger.info(f"Code summaries returned:\n{code_details[:5]}")
 
     except Exception as excinfo:
-        # emailNotify.send_mail_to_user(is_success=False, api_key=env_var.brevo_key, user_name=user_name,
-        #                               user_email=user_email)
         logger.error(
             f"Exception: {excinfo}\n"
         )
     finally:
         await llm.close()
-        # db.get_session().close()
 
     logger.info("Docify-ai execution completes.")
-
-
-# def docify_job(url: str, branch: str, blob_configs, user_id, work_dir) -> None:
-#     asyncio.run(docify_run(url, branch, blob_configs, user_id, work_dir))
 
 def main() -> None:
     asyncio.run(docify_run())

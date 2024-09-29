@@ -37,11 +37,11 @@ class OpenAIHandler:
         self.tokens = int(env_var.tokens)
         self.tokens_max = int(env_var.max_tokens)
         self.temperature = float(env_var.temperature)
-        self.rate_limit = 3  # 5
+        self.rate_limit = 10
         self.cache = TTLCache(maxsize=500, ttl=600)
         self.http_client = httpx.AsyncClient(
             http2=True,
-            timeout=20*60,
+            timeout=20 * 60,
             limits=httpx.Limits(
                 max_keepalive_connections=10, max_connections=100
             ),
@@ -209,26 +209,43 @@ class OpenAIHandler:
             token_count = get_token_count(prompt, self.encoding)
 
             if token_count > tokens:
+                # self.logger.debug(f"True Processing {index} \n token count{token_count}")
                 prompt = truncate_tokens(prompt, tokens)
+            # else:
+            #     self.logger.debug(f"False Processing {index} \n token count: {token_count}")
 
             async with self.rate_limit_semaphore:
                 response = await self.http_client.post(
                     self.endpoint,
-                    headers={"api-key": self.api_key},
+                    headers={
+                        "Content-Type": "application/json",
+                        "api-key": self.api_key
+                    },
                     json={
                         "messages": [
                             {
                                 "role": "system",
-                                "content": role_contents,
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": role_contents,
+                                    }
+                                ]
                             },
                             {
-                                "role": "user", "content": prompt,
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": prompt
+                                    }
+                                ]
                             }
                         ],
-                        "model": self.model,
                         "temperature": self.temperature,
-                        "max_tokens": tokens
-                    },
+                        "top_p": 0.95,
+                        "max_tokens": self.tokens_max
+                    }
                 )
                 response.raise_for_status()
                 data = response.json()
@@ -242,11 +259,11 @@ class OpenAIHandler:
 
 
         # don't know what those exceptions are and how they are being handled.
-        except openai.error.OpenAIError as excinfo:
-            self.logger.error(f"OpenAI Exception:\n{str(excinfo)}")
-            return await self.null_summary(
-                index, f"OpenAI exception: {excinfo.response.status_code}"
-            )
+        # except openai.error.OpenAIError as excinfo:
+        #     self.logger.error(f"OpenAI Exception:\n{str(excinfo)}")
+        #     return await self.null_summary(
+        #         index, f"OpenAI exception: {excinfo.response.status_code}"
+        #     )
 
         except httpx.HTTPStatusError as excinfo:
             self.logger.error(f"HTTPStatus Exception:\n{str(excinfo)}")

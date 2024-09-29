@@ -5,3 +5,7 @@ use alembic python app to do database migrations
 
 https://www.googleapis.com/auth/userinfo.email" to "openid
 https://www.googleapis.com/auth/userinfo.email
+
+phonepe web api
+pip install --index-url https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-python --extra-index-url https://pypi.org/simple phonepe_sdk==1.1.0
+

@@ -14,7 +14,10 @@ def get_json_from_gpt_response(data: str) -> Dict:
         return json.JSONDecoder().decode(data)
     # if additional text is present
     end = data.rfind("```")
-    ret_string = data[start + 3:end]
+    real_end = data.rfind("}")
+    real_start = data.find("{")
+    # ret_string = data[start + 3:end]
+    ret_string = data[real_start: real_end + 1]
     return json.JSONDecoder().decode(ret_string)
 
 

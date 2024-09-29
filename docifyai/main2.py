@@ -16,12 +16,12 @@ logger = logger.Logger(__name__)
 async def docify_run() -> None:
     logger.info("Welcome to docify-ai prototype testing")
     # url = sys.argv[1]
-    url = "https://github.com/eli64s/Readme-ai"
+    # url = "https://github.com/eli64s/Readme-ai"
     branch = "main"
     working_folder = "readmeai"
-    # url = "https://github.com/the-runtime/serverDowndrive"
+    url = "https://github.com/the-runtime/serverDowndrive"
 
-    repo_info = get_repo.get_github_repo_metadata(url)
+    repo_info = get_repo.get_github_repo_metadata(url,"github_token")
     logger.info(f"Repo info {repo_info}")
 
     # load environment variables
