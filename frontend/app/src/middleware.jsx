@@ -24,9 +24,9 @@ const AuthMiddleware =  ({children}) => {
 }
 
 async function checkAuthentication(){
-    const serv_add = import.meta.env.VITE_SERVER_ADDRESS
+    // const serv_add = import.meta.env.VITE_SERVER_ADDRESS
     try {
-        const resp = await fetch(`${serv_add}/api/checkauth`, {
+        const resp = await fetch(`https://docify.tabish.tech/api/checkauth`, {
             method: 'GET',
             credentials: 'include'
         })
