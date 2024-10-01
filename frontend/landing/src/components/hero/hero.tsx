@@ -47,7 +47,7 @@ function Hero({
     scrollRevealRef.current.push(el)
   }
   const clickedStated = () => {
-    window.open('https://docify.tabish.me/app', '_blank')
+    window.open('https://docify.tabish.tech/app', '_blank')
   }
   // const current
   return (
