@@ -18,6 +18,7 @@ class enVar:
             self.google_json_file = os.getenv("GOOGLE_JSON_FILE")
             self.redis_host = os.getenv("REDIS_HOST")
             self.redis_port = os.getenv("REDIS_PORT")
+            self.redis_username = os.getenv("REDIS_USERNAME")
             self.redis_password = os.getenv("REDIS_PASSWORD")
             self.redis_queue_name = os.getenv("REDIS_QUEUE_NAME")
             self.google_redirect_uri=os.getenv("GOOGLE_OAUTH_REDIRECT_URI")
