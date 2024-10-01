@@ -20,7 +20,7 @@ function Dashboard() {
     const [selectedOption, setSelectedOption] = useState('')
     const [entryPath, setEntryPath] = useState('.')
 
-    const serv_add = import.meta.env.VITE_SERVER_ADDRESS
+    // const serv_add = import.meta.env.VITE_SERVER_ADDRESS
     const fetchRepositoryInfo = async () => {
         // const github_access_key = import.meta.env.VITE_GITHUB_KEY
         try {
@@ -96,7 +96,7 @@ function Dashboard() {
                         <p>Selected Branch: {selectedOption}</p>
 
                         {/*use fecth to give info to the fastapi server*/}
-                        <Link to={`${serv_add}/api/document/?url=${repoUrl}&&branch=${selectedOption}&&work_dir=${entryPath}`}>
+                        <Link to={`https://docify.tabish.tech/api/document/?url=${repoUrl}&&branch=${selectedOption}&&work_dir=${entryPath}`}>
                             <Button variant="contained" color="primary">
                                 Generate Document
                             </Button>

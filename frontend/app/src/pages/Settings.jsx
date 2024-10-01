@@ -5,7 +5,7 @@ import './Settings.css';
 import Basepage from "./Basepage";
 
 function Settings() {
-    const serv_add = import.meta.env.VITE_SERVER_ADDRESS
+    // const serv_add = import.meta.env.VITE_SERVER_ADDRESS
     const [data, setData] = useState()
     useEffect(() => {
         getUserInfo().then(data => {
@@ -29,7 +29,7 @@ function Settings() {
                         <Typography variant="body2">Email:{data.email}</Typography>
                         <Typography variant="body2">Remaining Credits: {data.credits}</Typography>
                     </div>
-                    <Link to={`${serv_add}/api/logout`}>
+                    <Link to={`https://docify.tabish.tech/api/logout`}>
                         <Button variant="contained" color="primary" onClick={handleSignOut}>
                             Sign Out
                         </Button>
@@ -45,8 +45,8 @@ function Settings() {
 
 
 async function getUserInfo() {
-    const serv_add = import.meta.env.VITE_SERVER_ADDRESS
-    const url = `${serv_add}/api/userinfo`
+    // const serv_add = import.meta.env.VITE_SERVER_ADDRESS
+    const url = `https://docify.tabish.tech/api/userinfo`
     const resp = await fetch(url,{
         method: 'Get',
         credentials: 'include'
