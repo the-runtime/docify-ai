@@ -1,12 +1,15 @@
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
-from typing import  Any, List, Tuple
+from markdown import markdown
+from bs4 import BeautifulSoup
+from typing import Any, List, Tuple
 import requests
 from docifyai.core import logger
 import random
 import string
 import tempfile
+
 logger = logger.Logger(__name__)
 
 
@@ -80,12 +83,50 @@ class Aidoc:
         doc.add_page_break()
         titlehead = doc.add_heading("Introduction", 0)
         titlehead.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        doc.add_paragraph(self.project_intro)
+        intro_html_content = markdown(self.project_intro)
+        intro_soup = BeautifulSoup(intro_html_content, "html.parser")
+
+        # Iterate over each blcok-level element in the HTML
+        for element in intro_soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li']):
+            # Handle headings
+            if element.name.startswith('h'):
+                style = f'Heading {element.name[1:]}'
+                doc.add_paragraph(element.text, style=style)
+            # Handle lists
+            elif element.name in ['ul', 'ol']:
+                list_element = doc.add_paragraph()
+                list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
+                for item in element.find_all('li'):
+                    for run in item.find_all(text=True):  # Find all text runs within the list item
+                        run.style = 'List Bullet'  # Apply bullet or numbering style to each run
+            # Handle paragraphs
+            else:
+                doc.add_paragraph(element.text)
+
 
         # add contents of each chapters
         for name, contents in self.doc_contents:
             doc.add_page_break()
             chapter_head = doc.add_heading(name)
             chapter_head.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            doc.add_paragraph(contents)
+            html_content = markdown(contents)
+            soup = BeautifulSoup(html_content, "html.parser")
 
+            # Iterate over each blcok-level element in the HTML
+            for element in soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li']):
+                # Handle headings
+                if element.name.startswith('h'):
+                    style = f'Heading {element.name[1:]}'
+                    doc.add_paragraph(element.text, style=style)
+                # Handle lists
+                elif element.name in ['ul', 'ol']:
+                    list_element = doc.add_paragraph()
+                    list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
+                    for item in element.find_all('li'):
+                        for run in item.find_all(text=True):  # Find all text runs within the list item
+                            run.style = 'List Bullet'  # Apply bullet or numbering style to each run
+               # Handle paragraphs
+                else:
+                    doc.add_paragraph(element.text)
+
+            # doc.add_paragraph(html_content, style="html")

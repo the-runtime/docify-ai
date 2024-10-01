@@ -19,6 +19,7 @@ tabulate
 tenacity
 tiktoken
 toml
+markdown
 
 python-dotenv
 jedi

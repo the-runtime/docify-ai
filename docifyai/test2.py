@@ -24,8 +24,8 @@ async def docify_run() -> None:
 
     # load environment variables
     env_var = enVar()  # use config file
-    url = "https://github.com/the-runtime/subsearch"
-    branch = "main"
+    url = "https://github.com/kubernetes/kubernetes"
+    branch = "master"
     repo_info = get_repo.get_github_repo_metadata(url, env_var.github_token)
 
     temp_dir = get_repo.clone_repo(url, branch)
@@ -63,7 +63,7 @@ async def docify_run() -> None:
 
         # will use path for letting user download it
         doc_name = document.create_document()
-        shutil.copy(doc_name,"test.doc")
+        shutil.copy(doc_name, "test.doc")
 
 
     except Exception as excinfo:
@@ -74,6 +74,7 @@ async def docify_run() -> None:
         await llm.close()
 
     logger.info("Docify-ai execution completes.")
+
 
 def main() -> None:
     asyncio.run(docify_run())

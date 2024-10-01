@@ -41,7 +41,7 @@ def truncate_tokens(text: str, max_tokens: int) -> str:
     if not text:
         return text
     try:
-        encoder = encoding_for_model("gpt-3.5-turbo")
+        encoder = encoding_for_model("gpt-4o-mini")
 
         prompt_token_total = len(encoder.encode(text))
         if prompt_token_total <= max_tokens:

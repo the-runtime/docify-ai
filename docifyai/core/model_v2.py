@@ -209,10 +209,10 @@ class OpenAIHandler:
             token_count = get_token_count(prompt, self.encoding)
 
             if token_count > tokens:
-                # self.logger.debug(f"True Processing {index} \n token count{token_count}")
+                self.logger.debug(f"True Processing {index} \n token count{token_count}")
                 prompt = truncate_tokens(prompt, tokens)
-            # else:
-            #     self.logger.debug(f"False Processing {index} \n token count: {token_count}")
+            else:
+                self.logger.debug(f"False Processing {index} \n token count: {token_count}")
 
             async with self.rate_limit_semaphore:
                 response = await self.http_client.post(
@@ -251,9 +251,9 @@ class OpenAIHandler:
                 data = response.json()
                 summary = data["choices"][0]["message"]["content"]
 
-                self.logger.info(
-                    f"\nProcessing prompt: {index}\nResponse: {summary}"
-                )
+                # self.logger.info(
+                #     f"\nProcessing prompt: {index}\nResponse: {summary}"
+                # )
                 self.cache[prompt] = summary
                 return index, summary
 
