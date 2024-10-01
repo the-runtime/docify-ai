@@ -7,8 +7,8 @@ import Basepage from "./Basepage";
 
 function LoginSignup() {
     // const current_host = window.location.hostname
-    const serv_add = import.meta.env.VITE_SERVER_ADDRESS
-    const auth_url = `${serv_add}/auth/google`
+    // const serv_add = import.meta.env.VITE_SERVER_ADDRESS
+    const auth_url = `https://docify.tabish.tech/auth/google`
     return (
         <div className="login-signup-container">
             <Card className="auth-card">

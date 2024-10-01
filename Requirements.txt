@@ -20,6 +20,7 @@ tenacity
 tiktoken
 toml
 markdown
+bs4
 
 python-dotenv
 jedi

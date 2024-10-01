@@ -20,6 +20,7 @@ class enVar:
             self.redis_port = os.getenv("REDIS_PORT")
             self.redis_password = os.getenv("REDIS_PASSWORD")
             self.redis_queue_name = os.getenv("REDIS_QUEUE_NAME")
+            self.google_redirect_uri=os.getenv("GOOGLE_OAUTH_REDIRECT_URI")
 
 
         else:
