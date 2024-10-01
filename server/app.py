@@ -28,7 +28,7 @@ azure_blob_strings = [
     env_var.azure_blob_key,
     env_var.blob_container_name
 ]
-redis_conn = Redis(host=env_var.redis_host, port=env_var.redis_port,username=env_var.redis_username, password=env_var.redis_password)
+redis_conn = Redis.from_url(env_var.redis_url)
 job_que = Queue(name=env_var.redis_queue_name, connection=redis_conn, default_timeout=60*20)
 
 app = FastAPI()

@@ -16,10 +16,7 @@ class enVar:
             self.azure_blob_key = os.getenv("AZURE_BLOB_KEY")
             self.server_secret_key = os.getenv("SERVER_SECRET_KEY")
             self.google_json_file = os.getenv("GOOGLE_JSON_FILE")
-            self.redis_host = os.getenv("REDIS_HOST")
-            self.redis_port = os.getenv("REDIS_PORT")
-            self.redis_username = os.getenv("REDIS_USERNAME")
-            self.redis_password = os.getenv("REDIS_PASSWORD")
+            self.redis_url = os.getenv("REDIS_URL")
             self.redis_queue_name = os.getenv("REDIS_QUEUE_NAME")
             self.google_redirect_uri=os.getenv("GOOGLE_OAUTH_REDIRECT_URI")
 
