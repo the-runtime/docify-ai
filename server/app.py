@@ -145,6 +145,7 @@ def capture_payment(request: Request, payload: PaymentCapturedPayload):
     secret_key = env_var.server_secret_key
     client_secret_key = request.headers.get("Authorization")
     if secret_key != client_secret_key:
+        logger.debug("secret disn't matched")
         return
     amount = int(payload["payment"]["enitity"]["base_amount"]) / 100
     credits = (amount / 20) * 1000
