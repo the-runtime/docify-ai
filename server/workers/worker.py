@@ -54,7 +54,7 @@ def run_workers(env_config,
     #     thread.join()
     try:
         # Create a connection to the Redis server
-        redis_conn = Redis(host=env_config.redis_host, port=env_config.redis_port, password=env_config.redis_password)
+        redis_conn = Redis.from_url(env_config.redis_url)
         worker = Worker(env_config.redis_queue_name, connection=redis_conn)
         worker.work(with_scheduler=True)
 

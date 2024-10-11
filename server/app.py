@@ -19,6 +19,7 @@ from server.config import config
 from docifyai.core import logger
 
 from server.workers import job
+from server.model.routeRequest import PaymentCapturedPayload
 
 logger = logger.Logger(__name__)
 
@@ -138,6 +139,33 @@ async def google_auth_callback(req: Request):
 #         return HTMLResponse("Success :" + str(user_info))
 #
 
+
+@app.post("/payment/captured")
+def capture_payment(request: Request, payload: PaymentCapturedPayload):
+    secret_key = env_var.server_secret_key
+    client_secret_key = request.headers.get("Authorization")
+    if secret_key != client_secret_key:
+        return
+    amount = int(payload["payment"]["enitity"]["base_amount"]) / 100
+    credits = (amount / 20) * 1000
+    db_session = db.get_session()
+    user = db_session.query(models.User).filter_by(email=payload["payment"]["enitity"]["base_amount"]["email"]).first()
+    if not user:
+        # mail to email that it isn't registered
+        return
+    logger.debug("Credits is {}".format(credits))
+    user.update({"credits": user.credits + credits})
+    db_session.commit()
+    # may mail user about the credits
+    return
+
+
+
+
+
+
+
+
 @app.get("/api/logout")
 def delete_session(req: Request, user_info: dict = Depends(get_user_info)):
     if user_info is None:
@@ -190,7 +218,7 @@ def get_history(user_id: str = Depends(get_user_info)):
                 routeResponse.singleHistory(
                     historyId=single_history.id,
                     filename=single_history.filename.split("/")[-1],
-                    fileDownloadLink=f"https://docify-ai.the-runtime.me/api/getdoc/?blob_name={single_history.filename}",
+                    fileDownloadLink=f"https://docify.tabish.tech/api/getdoc/?blob_name={single_history.filename}",
                     # need to modify it before sending (azure security)
                     generationTime=single_history.gen_time,
                 )

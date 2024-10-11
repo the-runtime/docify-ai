@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import DocumentHistoryCard from "@/components/HistoryCard";
-import Basepage from "@/pages/Basepage";
+import DocumentHistoryCard from "../components/HistoryCard";
+import Basepage from "../pages/Basepage";
 import {daDK} from "@mui/material/locale";
 
 function History() {

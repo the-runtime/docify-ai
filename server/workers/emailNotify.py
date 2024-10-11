@@ -15,7 +15,7 @@ def send_mail_to_user(is_success: bool, api_key: str, user_name: str, user_email
     sender = {"name": "docify-ai", "email": "service@the-runtime.me"}
     reply_to = {"name": "Tabish", "email": "tabishhassan1oo@gmail.com"}
     if is_success:
-        file_url = f"https://docify-ai.the-runtime.me/api/getdoc/?blob_name={file_name}"
+        file_url = f"https://docify.tabish.tech/api/getdoc/?blob_name={file_name}"
         subject = "Document successfully generated"
         html_content = f"""<html><body>
             <h1>Document generation successful </h1>
