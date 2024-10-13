@@ -92,8 +92,8 @@ function ResponsiveAppBar() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page[0]} component={Link} to={`https://docify.tabish.tech/app/${page[1]}`} >
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                <MenuItem key={page} component={Link} to={`https://docify.tabish.tech/app/${page[1]}`} >
+                  <Typography sx={{ textAlign: 'center' }}>{page[0]}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -120,11 +120,11 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
-                key={page[0]}
+                key={page}
                 component={Link} to={`https://docify.tabish.tech/app/${page[1]}`}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page[0]}
               </Button>
             ))}
           </Box>
