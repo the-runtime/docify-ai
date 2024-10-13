@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import {Link} from "react-router-dom";
 
-const pages = ['dashboard', 'documents', 'settings'];
+const pages = [['Dashboard','dashboard'], ['Documents','documents'], ['Profile','settings']];
 const settings = ['settings', 'logout'];
 
 function ResponsiveAppBar() {
@@ -92,7 +92,7 @@ function ResponsiveAppBar() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} component={Link} to={`https://docify.tabish.tech/app/${page}`} >
+                <MenuItem key={page[0]} component={Link} to={`https://docify.tabish.tech/app/${page[1]}`} >
                   <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                 </MenuItem>
               ))}
@@ -120,8 +120,8 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={page[0]}
+                component={Link} to={`https://docify.tabish.tech/app/${page[1]}`}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
