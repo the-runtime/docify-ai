@@ -112,21 +112,46 @@ class Aidoc:
             html_content = markdown(contents)
             soup = BeautifulSoup(html_content, "html.parser")
 
-            # Iterate over each blcok-level element in the HTML
+            processed_elements = set()
+
             for element in soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li']):
-                # Handle headings
-                if element.name.startswith('h'):
-                    style = f'Heading {element.name[1:]}'
-                    doc.add_paragraph(element.text, style=style)
-                # Handle lists
-                elif element.name in ['ul', 'ol']:
-                    list_element = doc.add_paragraph()
-                    list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
-                    for item in element.find_all('li'):
-                        item.style = 'List Bullet' if element.name == 'ul' else 'List Number'
-                        doc.add_paragraph(item.text)
-                # Handle paragraphs
-                else:
-                    doc.add_paragraph(element.text)
+                if element.text and element.text not in processed_elements:  # Check for text and avoid duplicates
+                    # Handle headings
+                    if element.name.startswith('h'):
+                        style = f'Heading {element.name[1:]}'
+                        doc.add_paragraph(element.text, style=style)
+                        processed_elements.add(element.text)  # Add processed heading text
+
+                    # Handle lists (extract only direct text content of list items)
+                    elif element.name in ['ul', 'ol']:
+                        list_element = doc.add_paragraph()
+                        list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
+                        for item in element.find_all('li'):
+                            if item.text and item.text not in processed_elements:  # Check for text and avoid duplicates in list items
+                                doc.add_paragraph(item.text.strip())  # Extract and add trimmed text
+                                processed_elements.add(item.text)  # Add processed list item text
+
+                    # Handle paragraphs (avoid duplicates)
+                    else:
+                        if element.text and element.text not in processed_elements:
+                            doc.add_paragraph(element.text)
+                            processed_elements.add(element.text)  # Add processed paragraph text
+
+            # Iterate over each blcok-level element in the HTML
+            # for element in soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li']):
+            #     # Handle headings
+            #     if element.name.startswith('h'):
+            #         style = f'Heading {element.name[1:]}'
+            #         doc.add_paragraph(element.text, style=style)
+            #     # Handle lists
+            #     elif element.name in ['ul', 'ol']:
+            #         list_element = doc.add_paragraph()
+            #         list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
+            #         for item in element.find_all('li'):
+            #             item.style = 'List Bullet' if element.name == 'ul' else 'List Number'
+            #             doc.add_paragraph(item.text)
+            #     # Handle paragraphs
+            #     else:
+            #         doc.add_paragraph(element.text)
 
             # doc.add_paragraph(html_content, style="html")
