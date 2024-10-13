@@ -6,6 +6,16 @@ from docifyai.core import logger
 logger = logger.Logger(__name__)
 
 
+def send_limit_exceeded(api_key: str, user_name: str, email: str):
+    subject = ""
+    html_content = f"""<html><body>
+                <h1>Document generation successful </h1>
+                <p>You can only generate maximum of three documents.
+                Request to increase limit <a href=mailto:tabishhassan1oo@gmail.com>tabishhassan1oo@gmail.com </a></p>
+            </body></html>
+            """
+
+
 def send_mail_to_user(is_success: bool, api_key: str, user_name: str, user_email: str, file_name: str = ""):
     configuration = sib_api_v3_sdk.Configuration()
     configuration.api_key['api-key'] = api_key

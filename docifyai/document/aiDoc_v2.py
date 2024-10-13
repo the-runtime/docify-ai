@@ -35,7 +35,8 @@ class Aidoc:
         self.add_first_page()
         self.add_content_page()
         self.add_contents()
-        doc_temp_file = tempfile.mktemp(".docx", "doc_")
+        prefix = self.repo_data["doc_name"]
+        doc_temp_file = tempfile.mktemp(".docx", prefix)
         self.doc.save(doc_temp_file)
         return doc_temp_file
 
