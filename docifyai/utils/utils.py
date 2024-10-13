@@ -84,9 +84,8 @@ def get_prompt_for_chapters_name() -> str:
 
 def get_prompt_for_chapter_contents() -> str:
     return """"Produce the contents of the chapter of a software project given the project purpose and the files 
-    associated with the chapter.Focus on the flow of the project.Try to avoid using code snippet as much as possible 
-    if needed use small example not necessarily from the codebase itself, generate a simple example which explains the 
-    things easily.Also try to be concise.
+    associated with the chapter.Focus on the flow of the project. Avoid using code snippet and also be concise.
+    Keep things clean and simple.
     Chapter name: {0} Purpose: {1} Files: {2}"""
 
 
