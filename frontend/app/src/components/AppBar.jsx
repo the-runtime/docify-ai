@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import {Link} from "react-router-dom";
 
 const pages = ['Dashboard', 'History', 'Profile'];
 const settings = ['Profile', 'Logout'];
@@ -28,44 +29,17 @@ function ResponsiveAppBar() {
   };
 
   const handleCloseNavMenu = () => {
-    // if (page_name === "Dashboad") {
-    //     window.open("https://docify.tabish.tech/app/dashboard")
-    // }else if(page_name === "History") {
-    //     window.open("https://docify.tabish.tech/app/documents")
-    // }else if(page_name == "Profile"){
-    //     window.open("https://docify.tabish.tech/app/settings")
-    // }
+    
     setAnchorElNav(null);
   };
 
-  const handleOpenNavMenuLink = (page_name) => {
-    if (page_name === "Dashboad") {
-        window.open("https://docify.tabish.tech/app/dashboard")
-    }else if(page_name === "History") {
-        window.open("https://docify.tabish.tech/app/documents")
-    }else if(page_name == "Profile"){
-        window.open("https://docify.tabish.tech/app/settings")
-    }
-    setAnchorElNav(null);
-  }
 
   const handleCloseUserMenu = () => {
-    // if (name === "Profile"){
-    //     window.open("https://docify.tabish.tech/app/settings")
-    // }else if (name === "Logout" ){
-    //     window.open("https://docify.tabish.tech/api/logout")
-    // }
+   
     setAnchorElUser(null);
   };
 
-  const handleOpenUserMenuLink = (name) => {
-    if (name === "Profile"){
-        window.open("https://docify.tabish.tech/app/settings")
-    }else if (name === "Logout" ){
-        window.open("https://docify.tabish.tech/api/logout")
-    }
-    setAnchorElNav(null);
-  }
+
 
   return (
     <AppBar position="sticky">
@@ -118,7 +92,7 @@ function ResponsiveAppBar() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleOpenNavMenuLink(page)}>
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                 </MenuItem>
               ))}
@@ -177,7 +151,7 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleOpenUserMenuLink(setting)}>
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
                 </MenuItem>
               ))}
