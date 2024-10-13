@@ -104,7 +104,6 @@ class Aidoc:
         #     else:
         #         doc.add_paragraph(element.text)
 
-
         # add contents of each chapters
         for name, contents in self.doc_contents:
             doc.add_page_break()
@@ -124,9 +123,9 @@ class Aidoc:
                     list_element = doc.add_paragraph()
                     list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
                     for item in element.find_all('li'):
-                        for run in item.find_all(text=True):  # Find all text runs within the list item
-                            run.style = 'List Bullet'  # Apply bullet or numbering style to each run
-               # Handle paragraphs
+                        item.style = 'List Bullet' if element.name == 'ul' else 'List Number'
+                        doc.add_paragraph(item.text)
+                # Handle paragraphs
                 else:
                     doc.add_paragraph(element.text)
 
