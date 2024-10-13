@@ -12,7 +12,7 @@ def send_limit_exceeded(api_key: str, user_name: str, email: str):
 
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
-    sender = {"name": "docify-ai", "email": "service@the-runtime.me"}
+    sender = {"name": "docify-ai", "email": "docify@tabish.tech"}
     reply_to = {"name": "Tabish", "email": "tabishhassan1oo@gmail.com"}
 
     subject = "Limit Exceeded"
@@ -39,7 +39,7 @@ def added_to_queue(api_key: str, user_name: str, email: str):
     configuration.api_key['api-key'] = api_key
 
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
-    sender = {"name": "docify-ai", "email": "service@the-runtime.me"}
+    sender = {"name": "docify-ai", "email": "docify@tabish.tech"}
     reply_to = {"name": "Tabish", "email": "tabishhassan1oo@gmail.com"}
     subject = "Request added to queue"
     html_content = f"""<html><body>
@@ -65,7 +65,7 @@ def send_mail_to_user(is_success: bool, api_key: str, user_name: str, user_email
 
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
-    sender = {"name": "docify-ai", "email": "service@the-runtime.me"}
+    sender = {"name": "docify-ai", "email": "docify@tabish.tech"}
     reply_to = {"name": "Tabish", "email": "tabishhassan1oo@gmail.com"}
     if is_success:
         file_url = f"https://docify.tabish.tech/api/getdoc/?blob_name={file_name}"
