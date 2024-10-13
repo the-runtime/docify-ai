@@ -7,13 +7,51 @@ logger = logger.Logger(__name__)
 
 
 def send_limit_exceeded(api_key: str, user_name: str, email: str):
-    subject = ""
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = api_key
+
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+
+    subject = "Limit Exceeded"
     html_content = f"""<html><body>
                 <h1>Document generation successful </h1>
                 <p>You can only generate maximum of three documents.
                 Request to increase limit <a href=mailto:tabishhassan1oo@gmail.com>tabishhassan1oo@gmail.com </a></p>
             </body></html>
             """
+    to = [{"email": email, "name": user_name}]
+    # params = {"parameter": "My param value", "subject": "New Subject"}
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, html_content=html_content, sender=sender, reply_to=reply_to,
+                                                   subject=subject)
+
+    try:
+        api_response = api_instance.send_transac_email(send_smtp_email)
+        logger.info(api_response)
+    except ApiException as e:
+        logger.error("Exception when calling SMTPApi->send_transac_email: %s\n" % e)
+
+
+def added_to_queue(api_key: str, user_name: str, email: str):
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = api_key
+
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+    subject = "Request added to queue"
+    html_content = f"""<html><body>
+                    <h1>Your doc generation work is in queue</h1>
+                    <p>We will let you know when it is completed.
+                    <body></html>
+                """
+    to = [{"email": email, "name": user_name}]
+    # params = {"parameter": "My param value", "subject": "New Subject"}
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, html_content=html_content, sender=sender, reply_to=reply_to,
+                                                   subject=subject)
+
+    try:
+        api_response = api_instance.send_transac_email(send_smtp_email)
+        logger.info(api_response)
+    except ApiException as e:
+        logger.error("Exception when calling SMTPApi->send_transac_email: %s\n" % e)
 
 
 def send_mail_to_user(is_success: bool, api_key: str, user_name: str, user_email: str, file_name: str = ""):

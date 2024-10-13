@@ -21,6 +21,7 @@ class enVar:
             self.google_redirect_uri=os.getenv("GOOGLE_OAUTH_REDIRECT_URI")
 
 
+
         else:
             logger.error("Problem loading env file, make sure it is available")
             sys.exit()

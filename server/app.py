@@ -18,7 +18,6 @@ from server.model import routeResponse, models
 from server.controller import blobcontroller
 from server.config import config
 from docifyai.core import logger
-
 from server.workers import job
 from server.model.routeRequest import PaymentCapturedPayload
 
