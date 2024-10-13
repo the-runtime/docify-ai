@@ -46,6 +46,7 @@ function ResponsiveAppBar() {
     }else if(page_name == "Profile"){
         window.open("https://docify.tabish.tech/app/settings")
     }
+    setAnchorElNav(null);
   }
 
   const handleCloseUserMenu = () => {
@@ -63,6 +64,7 @@ function ResponsiveAppBar() {
     }else if (name === "Logout" ){
         window.open("https://docify.tabish.tech/api/logout")
     }
+    setAnchorElNav(null);
   }
 
   return (
