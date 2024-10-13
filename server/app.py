@@ -6,6 +6,7 @@ import google_auth_oauthlib.flow
 import hashlib
 import os
 import requests
+import razorpay
 
 from redis import Redis
 from rq import Queue
@@ -141,13 +142,16 @@ async def google_auth_callback(req: Request):
 
 
 @app.post("/payment/captured")
-def capture_payment(request: Request, payload: PaymentCapturedPayload):
+async def capture_payment(request: Request, payload: PaymentCapturedPayload):
+    client = razorpay.Client(auth=("[YOUR_KEY_ID]", "[YOUR_KEY_SECRET]"))
     secret_key = env_var.server_secret_key
-    client_secret_key = request.headers.get("Authorization")
+    client_secret_key = request.headers.get("X-Razorpay-Signature")
+    request_json = await request.json()
+    client.utility.verify_webhook_signature(request_json, client_secret_key, secret_key)
     if secret_key != client_secret_key:
-        logger.debug("secret disn't matched")
+        logger.debug("secret didn't matched")
         return
-    amount = int(payload["payment"]["enitity"]["base_amount"]) / 100
+    amount = int(payload["payment"]["entity"]["base_amount"]) / 100
     credits = (amount / 20) * 1000
     db_session = db.get_session()
     user = db_session.query(models.User).filter_by(email=payload["payment"]["enitity"]["base_amount"]["email"]).first()

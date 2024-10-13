@@ -36,6 +36,7 @@ google-auth-httplib2
 google-api-python-client
 google-auth
 google-api-core
+razorpay
 
 sqlalchemy
 psycopg2-binary
