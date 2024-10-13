@@ -82,27 +82,27 @@ class Aidoc:
         # add intro page
         doc = self.doc
         doc.add_page_break()
-        titlehead = doc.add_heading("Introduction", 0)
-        titlehead.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        intro_html_content = markdown(self.project_intro)
-        intro_soup = BeautifulSoup(intro_html_content, "html.parser")
+        # titlehead = doc.add_heading("Introduction", 0)
+        # titlehead.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        # intro_html_content = markdown(self.project_intro)
+        # intro_soup = BeautifulSoup(intro_html_content, "html.parser")
 
         # Iterate over each blcok-level element in the HTML
-        for element in intro_soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li']):
-            # Handle headings
-            if element.name.startswith('h'):
-                style = f'Heading {element.name[1:]}'
-                doc.add_paragraph(element.text, style=style)
-            # Handle lists
-            elif element.name in ['ul', 'ol']:
-                list_element = doc.add_paragraph()
-                list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
-                for item in element.find_all('li'):
-                    for run in item.find_all(text=True):  # Find all text runs within the list item
-                        run.style = 'List Bullet'  # Apply bullet or numbering style to each run
-            # Handle paragraphs
-            else:
-                doc.add_paragraph(element.text)
+        # for element in intro_soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li']):
+        #     # Handle headings
+        #     if element.name.startswith('h'):
+        #         style = f'Heading {element.name[1:]}'
+        #         doc.add_paragraph(element.text, style=style)
+        #     # Handle lists
+        #     elif element.name in ['ul', 'ol']:
+        #         list_element = doc.add_paragraph()
+        #         list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
+        #         for item in element.find_all('li'):
+        #             for run in item.find_all(text=True):  # Find all text runs within the list item
+        #                 run.style = 'List Bullet'  # Apply bullet or numbering style to each run
+        #     # Handle paragraphs
+        #     else:
+        #         doc.add_paragraph(element.text)
 
 
         # add contents of each chapters
