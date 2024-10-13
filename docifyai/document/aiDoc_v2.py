@@ -81,7 +81,7 @@ class Aidoc:
     def add_contents(self) -> None:
         # add intro page
         doc = self.doc
-        doc.add_page_break()
+        # doc.add_page_break()
         # titlehead = doc.add_heading("Introduction", 0)
         # titlehead.alignment = WD_ALIGN_PARAGRAPH.CENTER
         # intro_html_content = markdown(self.project_intro)
