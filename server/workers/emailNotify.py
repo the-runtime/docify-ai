@@ -12,6 +12,9 @@ def send_limit_exceeded(api_key: str, user_name: str, email: str):
 
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
+    sender = {"name": "docify-ai", "email": "service@the-runtime.me"}
+    reply_to = {"name": "Tabish", "email": "tabishhassan1oo@gmail.com"}
+
     subject = "Limit Exceeded"
     html_content = f"""<html><body>
                 <h1>Document generation successful </h1>
@@ -36,6 +39,8 @@ def added_to_queue(api_key: str, user_name: str, email: str):
     configuration.api_key['api-key'] = api_key
 
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+    sender = {"name": "docify-ai", "email": "service@the-runtime.me"}
+    reply_to = {"name": "Tabish", "email": "tabishhassan1oo@gmail.com"}
     subject = "Request added to queue"
     html_content = f"""<html><body>
                     <h1>Your doc generation work is in queue</h1>
