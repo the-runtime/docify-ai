@@ -38,7 +38,7 @@ function ResponsiveAppBar() {
     setAnchorElNav(null);
   };
 
-  const handleOpenNavMenuLink = (name) => {
+  const handleOpenNavMenuLink = (page_name) => {
     if (page_name === "Dashboad") {
         window.open("https://docify.tabish.tech/app/dashboard")
     }else if(page_name === "History") {
