@@ -9,6 +9,7 @@ from docifyai.core import logger
 import random
 import string
 import tempfile
+from html2docx import html2docx
 
 logger = logger.Logger(__name__)
 
@@ -81,28 +82,6 @@ class Aidoc:
     def add_contents(self) -> None:
         # add intro page
         doc = self.doc
-        # doc.add_page_break()
-        # titlehead = doc.add_heading("Introduction", 0)
-        # titlehead.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        # intro_html_content = markdown(self.project_intro)
-        # intro_soup = BeautifulSoup(intro_html_content, "html.parser")
-
-        # Iterate over each blcok-level element in the HTML
-        # for element in intro_soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li']):
-        #     # Handle headings
-        #     if element.name.startswith('h'):
-        #         style = f'Heading {element.name[1:]}'
-        #         doc.add_paragraph(element.text, style=style)
-        #     # Handle lists
-        #     elif element.name in ['ul', 'ol']:
-        #         list_element = doc.add_paragraph()
-        #         list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
-        #         for item in element.find_all('li'):
-        #             for run in item.find_all(text=True):  # Find all text runs within the list item
-        #                 run.style = 'List Bullet'  # Apply bullet or numbering style to each run
-        #     # Handle paragraphs
-        #     else:
-        #         doc.add_paragraph(element.text)
 
         # add contents of each chapters
         for name, contents in self.doc_contents:
@@ -110,48 +89,35 @@ class Aidoc:
             chapter_head = doc.add_heading(name)
             chapter_head.alignment = WD_ALIGN_PARAGRAPH.CENTER
             html_content = markdown(contents)
-            soup = BeautifulSoup(html_content, "html.parser")
 
-            processed_elements = set()
+            # testing html rendering
+            # same object is being passed so no problem if we catch doc from html2docx
+            doc = html2docx(html_content, doc)
+            # doc.add_paragraph(text_content)
 
-            for element in soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li']):
-                if element.text and element.text not in processed_elements:  # Check for text and avoid duplicates
-                    # Handle headings
-                    if element.name.startswith('h'):
-                        style = f'Heading {element.name[1:]}'
-                        doc.add_paragraph(element.text, style=style)
-                        processed_elements.add(element.text)  # Add processed heading text
+            # soup = BeautifulSoup(html_content, "html.parser")
 
-                    # Handle lists (extract only direct text content of list items)
-                    elif element.name in ['ul', 'ol']:
-                        list_element = doc.add_paragraph()
-                        list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
-                        for item in element.find_all('li'):
-                            if item.text and item.text not in processed_elements:  # Check for text and avoid duplicates in list items
-                                doc.add_paragraph(item.text.strip())  # Extract and add trimmed text
-                                processed_elements.add(item.text)  # Add processed list item text
+            # processed_elements = set()
 
-                    # Handle paragraphs (avoid duplicates)
-                    else:
-                        if element.text and element.text not in processed_elements:
-                            doc.add_paragraph(element.text)
-                            processed_elements.add(element.text)  # Add processed paragraph text
-
-            # Iterate over each blcok-level element in the HTML
             # for element in soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li']):
-            #     # Handle headings
-            #     if element.name.startswith('h'):
-            #         style = f'Heading {element.name[1:]}'
-            #         doc.add_paragraph(element.text, style=style)
-            #     # Handle lists
-            #     elif element.name in ['ul', 'ol']:
-            #         list_element = doc.add_paragraph()
-            #         list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
-            #         for item in element.find_all('li'):
-            #             item.style = 'List Bullet' if element.name == 'ul' else 'List Number'
-            #             doc.add_paragraph(item.text)
-            #     # Handle paragraphs
-            #     else:
-            #         doc.add_paragraph(element.text)
-
-            # doc.add_paragraph(html_content, style="html")
+            #     if element.text and element.text not in processed_elements:  # Check for text and avoid duplicates
+            #         # Handle headings
+            #         if element.name.startswith('h'):
+            #             style = f'Heading {element.name[1:]}'
+            #             doc.add_paragraph(element.text, style=style)
+            #             processed_elements.add(element.text)  # Add processed heading text
+            #
+            #         # Handle lists (extract only direct text content of list items)
+            #         elif element.name in ['ul', 'ol']:
+            #             list_element = doc.add_paragraph()
+            #             list_element.style = 'List Bullet' if element.name == 'ul' else 'List Number'
+            #             for item in element.find_all('li'):
+            #                 if item.text and item.text not in processed_elements:  # Check for text and avoid duplicates in list items
+            #                     doc.add_paragraph(item.text.strip())  # Extract and add trimmed text
+            #                     processed_elements.add(item.text)  # Add processed list item text
+            #
+            #         # Handle paragraphs (avoid duplicates)
+            #         else:
+            #             if element.text and element.text not in processed_elements:
+            #                 doc.add_paragraph(element.text)
+            #                 processed_elements.add(element.text)  # Add processed paragraph text

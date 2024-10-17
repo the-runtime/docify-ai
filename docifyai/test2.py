@@ -24,8 +24,8 @@ async def docify_run() -> None:
 
     # load environment variables
     env_var = enVar()  # use config file
-    url = "https://github.com/kubernetes/kubernetes"
-    branch = "master"
+    url = "https://github.com/the-runtime/docify-ai"
+    branch = "main"
     repo_info = get_repo.get_github_repo_metadata(url, env_var.github_token)
 
     temp_dir = get_repo.clone_repo(url, branch)
