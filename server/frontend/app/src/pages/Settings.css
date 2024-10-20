@@ -1,0 +1,28 @@
+/* Styling for the settings container */
+.settings-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Styling for the settings card */
+.settings-card {
+    width: 300px;
+    padding: 20px;
+    text-align: center;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling for the account information */
+.account-info {
+    margin-top: 20px;
+}
+
+/* Styling for the sign-out and delete buttons */
+button {
+    margin: 10px;
+}

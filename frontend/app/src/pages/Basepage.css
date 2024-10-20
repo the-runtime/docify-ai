@@ -1,0 +1,100 @@
+/* Global Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: linear-gradient(to bottom, #20232a, #29303f);
+}
+
+/* Basepage Styles */
+.base-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.base-content {
+    width: 80%;
+    max-width: 500px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* AppBar Styles */
+.app-bar {
+    background-color: #3f51b5;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+/* Navigation Links */
+.app-bar-links {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust the gap as needed */
+
+    @media (max-width: 768px) {
+        display: none; /* Hide navigation links on small screens */
+    }
+}
+
+/* Hamburger Menu Button */
+.app-bar-menu-button {
+    display: none; /* Hide by default */
+
+    @media (max-width: 768px) {
+        display: block;
+    }
+}
+
+/* Menu Items */
+.app-bar-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #3f51b5;
+    width: 200px;
+    padding: 10px;
+    z-index: 1;
+
+    @media (max-width: 768px) {
+        display: block;
+    }
+}
+
+.app-bar-menu-item {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+}
+/* Card Styles */
+.card {
+    padding: 20px;
+    text-align: center;
+}
+
+/* Typography */
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .base-content {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+}

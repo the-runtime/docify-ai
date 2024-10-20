@@ -1,0 +1,44 @@
+/* Dashboard container styles */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 20px;
+}
+
+/* Input card styles */
+.input-card {
+    width: 80%;
+    max-width: 500px;
+    padding: 20px;
+    text-align: center;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Repo info card styles */
+.repo-info-card {
+    width: 400px;
+    padding: 20px;
+    text-align: center;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Additional styling can be added as needed */
+/* Responsive adjustments*/
+@media (max-width: 768px) {
+    .dashboard-container {
+        gap: 10px;
+    }
+    .input-card, repo-info-card {
+        width: 90%;
+    }
+
+}

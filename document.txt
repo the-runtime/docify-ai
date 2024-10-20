@@ -1,0 +1,11 @@
+write a lsp client, implementing call to refrences and document link
+or just use static code analyzer for getting all the refrences
+use alembic python app to do database migrations
+
+
+https://www.googleapis.com/auth/userinfo.email" to "openid
+https://www.googleapis.com/auth/userinfo.email
+
+phonepe web api
+pip install --index-url https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-python --extra-index-url https://pypi.org/simple phonepe_sdk==1.1.0
+
