@@ -247,13 +247,14 @@ async def generate_doc(url: str, branch: str, work_dir: str, user_id: str = Depe
     logger.info("User_id is ", user_id)  # here some error is happening
     db_session = db.get_session()
     user_info = db_session.query(models.User).filter_by(id=user_id).first()
+    user_name = user_info.username
+    user_email = user_info.email
     download_history = user_info.docify_history
     document_number = len(download_history)
     if document_number >= 3:
         emailNotify.send_limit_exceeded(env_var.brevo_key, user_info.username, user_info.email)
         return
-    user_name = user_info.username
-    user_email = user_info.email
+
 
     # send mail to user
     emailNotify.added_to_queue(env_var.brevo_key, user_name, user_email)
