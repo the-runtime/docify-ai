@@ -19,6 +19,7 @@ class enVar:
             self.redis_url = os.getenv("REDIS_URL")
             self.redis_queue_name = os.getenv("REDIS_QUEUE_NAME")
             self.google_redirect_uri=os.getenv("GOOGLE_OAUTH_REDIRECT_URI")
+            self.brevo_key=os.getenv("BREVO_KEY")
 
 
 

@@ -20,6 +20,7 @@ from server.config import config
 from docifyai.core import logger
 from server.workers import job
 from server.model.routeRequest import PaymentCapturedPayload
+from server.workers import emailNotify
 
 logger = logger.Logger(__name__)
 
@@ -244,6 +245,18 @@ async def generate_doc(url: str, branch: str, work_dir: str, user_id: str = Depe
     if not user_id:
         return "Not authenticated"  # also add status type for client to handle it gracefully
     logger.info("User_id is ", user_id)  # here some error is happening
+    db_session = db.get_session()
+    user_info = db_session.query(models.User).filter_by(id=user_id).first()
+    download_history = user_info.docify_history
+    document_number = len(download_history)
+    if document_number >= 3:
+        emailNotify.send_limit_exceeded(env_var.brevo_key, user_info.username, user_info.email)
+        return
+    user_name = user_info.username
+    user_email = user_info.email
+
+    # send mail to user
+    emailNotify.added_to_queue(env_var.brevo_key, user_name, user_email)
     doc_job = job_que.enqueue(job.docify_job, url, branch, azure_blob_strings, user_id, work_dir)
     # return "Process started"
     return RedirectResponse("/app/dashboard", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
